@@ -1,18 +1,11 @@
-'use client';
-
 import Image from 'next/image';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/subpabaseClient';
-import { Session, User } from '@supabase/supabase-js';
+import { useSupabaseContext } from '../store/app-context';
 
-const Dashboard = ({
-  user,
-  session,
-}: {
-  user: User | null;
-  session: Session | null;
-}) => {
-  console.log(user?.id);
+const Dashboard = () => {
+  const [state, _] = useSupabaseContext();
+
   const [imageUrls, setImageUrls] = useState<string[] | null>(null);
   const [categories, setCategories] = useState<string[] | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -31,7 +24,7 @@ const Dashboard = ({
     const { data, error } = await supabase
       .from('image')
       .select('*')
-      .eq('user_id', user!.id)
+      .eq('user_id', state.user!.id)
       .eq('category_id', cats[0].id);
 
     if (!data) return;
@@ -41,7 +34,10 @@ const Dashboard = ({
   };
 
   const getAllCategoriesFromDB = async () => {
-    const { data, error } = await supabase.from('category').select('*');
+    const { data, error } = await supabase
+      .from('category')
+      .select('*')
+      .eq('user_id', state.user!.id);
 
     if (!data) return;
 
@@ -51,7 +47,7 @@ const Dashboard = ({
   useEffect(() => {
     // getAllImagesFromDB();
     getAllCategoriesFromDB();
-  }, [user?.id]);
+  }, [state.user?.id]);
 
   useEffect(() => {
     getAllImagesFromDB();
@@ -78,7 +74,9 @@ const Dashboard = ({
     if (data) {
       const {} = await supabase
         .from('image')
-        .insert([{ user_id: user!.id, url: url, category_id: data[0].id }]);
+        .insert([
+          { user_id: state.user!.id, url: url, category_id: data[0].id },
+        ]);
     }
 
     getAllImagesFromDB();
@@ -93,15 +91,23 @@ const Dashboard = ({
   const setCategoryHandler = async () => {
     const {} = await supabase
       .from('category')
-      .insert([{ name: categoryRef.current!.value }]);
+      .insert([{ name: categoryRef.current!.value, user_id: state.user!.id }]);
 
     setCategory(categoryRef.current!.value);
     getAllCategoriesFromDB();
   };
 
+  const signOutHandler = async () => {
+    const { error } = await supabase.auth.signOut();
+    console.log(error);
+  };
+
   return (
     <div>
       <div>
+        <button type="button" onClick={signOutHandler}>
+          sign out
+        </button>
         <h1>Your dashboard</h1>
         <input
           type="text"

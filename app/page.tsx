@@ -1,98 +1,55 @@
 'use client';
 
+// Q&A: Is there a difference between having a session and a user?
+// if the user isnt signed in or they have signed out, the session is null
+// if we have a session, we have a user with a specific id connected to it
+
+// TODO: Better form handling (currently using too much useState)
+// TODO: Add a name input to welcome the user by their name
+// TODO: Put session and user in the context
+// TODO: Change the url when displaying the dashboard, using router
+
+import { useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useEffect, useId, useRef, useState } from 'react';
+
 import { supabase } from '../lib/subpabaseClient';
-import Dashboard from './Dashboard';
+import { useSupabaseContext } from '../store/app-context';
+
+import Form from '@/components/Form';
+import Dashboard from '@/components/Dashboard';
+import { setSession, setUser } from '../store/actionCreators';
 
 export default function Home() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [isSignIn, setIsSignIn] = useState(true);
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const passRef = useRef<HTMLInputElement | null>(null);
-  const id = useId();
-  const router = useRouter();
-
-  supabase.auth.onAuthStateChange((_e, session) => {
-    setSession(session);
-    setUser(session?.user || null);
-    console.log('changed');
-  });
+  const [state, dispatch] = useSupabaseContext();
 
   const getSupabaseSession = async () => {
     const { data, error } = await supabase.auth.getSession();
 
+    if (error) throw new Error(error.message);
     if (data) return data;
   };
 
-  const signInUser = async () => {
-    let { data, error } = await supabase.auth.signInWithPassword({
-      email: emailRef.current!.value,
-      password: passRef.current!.value,
-    });
-    // session and user
-    if (data) {
-      setSession(data.session);
-      setUser(data.user);
-    }
-  };
-
-  const signUpUser = async () => {
-    let { data, error } = await supabase.auth.signUp({
-      email: emailRef.current!.value,
-      password: passRef.current!.value,
-    });
-    // user
-    console.log(data);
-  };
-
-  const formSubmitHandler = (e: FormEvent) => {
-    e.preventDefault();
-
-    if (emailRef.current?.value && passRef.current?.value) {
-      if (isSignIn) {
-        signInUser();
-      } else {
-        signUpUser();
-      }
-    }
-  };
-
   useEffect(() => {
-    getSupabaseSession().then(res =>
-      res ? setSession(res.session) : console.log(res)
-    );
+    getSupabaseSession()
+      .then(res => res && res.session && dispatch(setSession(res.session)))
+      .catch(error => console.log(error));
+
+    supabase.auth.onAuthStateChange((_e, session) => {
+      console.log('Auth state is changed');
+      dispatch(setSession(session));
+      dispatch(setUser(session?.user || null));
+    });
   }, []);
 
   return (
     <main>
-      <h1>Hi memory lane app</h1>
-      <p>
-        <button onClick={() => setIsSignIn(false)}>sign up</button> or{' '}
-        <button onClick={() => setIsSignIn(true)}>sign in</button>
-      </p>
+      {/* no session => no user */}
+      {/* sign in/up form */}
+      {!state.session && <Form />}
 
-      <form onSubmit={formSubmitHandler}>
-        <label htmlFor={`${id}-email`}>Email: </label>
-        <input type="email" name="email" id={`${id}-email`} ref={emailRef} />
-        <label htmlFor={`${id}-pass`}>Password: </label>
-        <input
-          type="password"
-          name="password"
-          id={`${id}-pass`}
-          ref={passRef}
-        />
-        {isSignIn ? (
-          <button type="button">Sign in</button>
-        ) : (
-          <button type="button">Sign up</button>
-        )}
-        <button type="submit">Done</button>
-      </form>
-
-      {user && <Dashboard user={user} session={session} />}
+      {/* session => user */}
+      {/* personal dashboard */}
+      {state.session && state.user && <Dashboard />}
     </main>
   );
 }
