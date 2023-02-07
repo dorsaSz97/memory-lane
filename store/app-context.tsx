@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useReducer } from 'react';
 import { initialSupabaseState, ISupabaseState } from './app-state';
 import { supabaseReducer } from './app-reducer';
@@ -13,9 +15,11 @@ const SupabaseContextProvider = ({
 }) => {
   const [state, dispatch] = useReducer(supabaseReducer, initialSupabaseState);
 
-  <SupabaseContext.Provider value={[state, dispatch]}>
-    {children}
-  </SupabaseContext.Provider>;
+  return (
+    <SupabaseContext.Provider value={[state, dispatch]}>
+      {children}
+    </SupabaseContext.Provider>
+  );
 };
 
 export default SupabaseContextProvider;

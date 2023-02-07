@@ -5,19 +5,19 @@
 // if we have a session, we have a user with a specific id connected to it
 
 // TODO: Better form handling (currently using too much useState)
-// TODO: Add a name input to welcome the user by their name
+// TODO: Add a name input to welcome users by their name
 // TODO: Put session and user in the context
 // TODO: Change the url when displaying the dashboard, using router
 
-import { useState, useEffect } from 'react';
-import { Session, User } from '@supabase/supabase-js';
+import { useEffect } from 'react';
 
 import { supabase } from '../lib/subpabaseClient';
 import { useSupabaseContext } from '../store/app-context';
+import { setSession, setUser } from '../store/actionCreators';
 
 import Form from '@/components/Form';
 import Dashboard from '@/components/Dashboard';
-import { setSession, setUser } from '../store/actionCreators';
+import { STATIC_STATUS_PAGES } from 'next/dist/shared/lib/constants';
 
 export default function Home() {
   const [state, dispatch] = useSupabaseContext();
@@ -31,13 +31,23 @@ export default function Home() {
 
   useEffect(() => {
     getSupabaseSession()
-      .then(res => res && res.session && dispatch(setSession(res.session)))
+      .then(res => {
+        if (res && res.session) {
+          dispatch(setSession(res.session));
+          dispatch(setUser(res.session.user));
+        }
+      })
       .catch(error => console.log(error));
 
     supabase.auth.onAuthStateChange((_e, session) => {
       console.log('Auth state is changed');
-      dispatch(setSession(session));
-      dispatch(setUser(session?.user || null));
+      if (session) {
+        dispatch(setSession(session));
+        dispatch(setUser(session.user));
+      } else {
+        dispatch(setSession(null));
+        dispatch(setUser(null));
+      }
     });
   }, []);
 

@@ -1,105 +1,83 @@
-import Image from 'next/image';
+'use client';
+
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { supabase } from '../lib/subpabaseClient';
+import Image from 'next/image';
 import { useSupabaseContext } from '../store/app-context';
+import { supabase } from '../lib/subpabaseClient';
+import {
+  getFolders,
+  IFolder,
+  uploadImage,
+  getImages,
+  uploadFolder,
+} from '../lib/supabaseFuncs';
 
 const Dashboard = () => {
   const [state, _] = useSupabaseContext();
+  console.log('dashboard is loaded');
 
   const [imageUrls, setImageUrls] = useState<string[] | null>(null);
   const [categories, setCategories] = useState<string[] | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  const [category, setCategory] = useState<null | string>(null);
+  const [folder, setFolder] = useState<null | IFolder>(null);
   const categoryRef = useRef<HTMLInputElement | null>(null);
-
-  const getAllImagesFromDB = async () => {
-    const { data: cats, error: error1 } = await supabase
-      .from('category')
-      .select('*')
-      .eq('name', category);
-
-    if (!cats || cats.length === 0) return;
-
-    const { data, error } = await supabase
-      .from('image')
-      .select('*')
-      .eq('user_id', state.user!.id)
-      .eq('category_id', cats[0].id);
-
-    if (!data) return;
-    console.log(data);
-
-    setImageUrls(data.map(img => img.url));
-  };
-
-  const getAllCategoriesFromDB = async () => {
-    const { data, error } = await supabase
-      .from('category')
-      .select('*')
-      .eq('user_id', state.user!.id);
-
-    if (!data) return;
-
-    setCategories(data.map(cat => cat.name));
-  };
+  console.log(imageUrls);
 
   useEffect(() => {
-    // getAllImagesFromDB();
-    getAllCategoriesFromDB();
+    getFolders(state.user!).then(
+      data => data && setCategories(data.map(cat => cat))
+    );
   }, [state.user?.id]);
 
   useEffect(() => {
-    getAllImagesFromDB();
-  }, [category]);
-
-  const uploadImageDB = async (image: File | null) => {
-    if (!image) return;
-
-    const {} = await supabase.storage
-      .from('memory-bucket')
-      .upload(`${image.name}`, image);
-
-    const url = supabase.storage
-      .from('memory-bucket')
-      .getPublicUrl(`${image.name}`).data.publicUrl;
-
-    const { data, error } = await supabase
-      .from('category')
-      .select('*')
-      .eq('name', category);
-
-    console.log('this is the cateogryyyyyy' + category + data);
-
-    if (data) {
-      const {} = await supabase
-        .from('image')
-        .insert([
-          { user_id: state.user!.id, url: url, category_id: data[0].id },
-        ]);
-    }
-
-    getAllImagesFromDB();
-  };
+    getFolders(state.user!).then(
+      data => data && setCategories(data.map(cat => cat))
+    );
+    if (!folder) return;
+    getImages(state.user!, folder).then(
+      data => data && setImageUrls(data.map(img => img))
+    );
+  }, [folder]);
 
   const uploadImageHandler = (e: ChangeEvent) => {
     const image = (e.target as HTMLInputElement).files?.item(0);
 
-    if (image) uploadImageDB(image);
+    if (image) uploadImage(state.user!, image, folder!);
   };
 
-  const setCategoryHandler = async () => {
-    const {} = await supabase
-      .from('category')
-      .insert([{ name: categoryRef.current!.value, user_id: state.user!.id }]);
+  const setFolderHandler = async () => {
+    try {
+      const folder = await uploadFolder(
+        state.user!,
+        categoryRef.current!.value
+      );
 
-    setCategory(categoryRef.current!.value);
-    getAllCategoriesFromDB();
+      if (folder) {
+        setFolder(folder);
+      }
+    } catch {
+      console.log('something wrong');
+    }
   };
 
   const signOutHandler = async () => {
     const { error } = await supabase.auth.signOut();
-    console.log(error);
+  };
+
+  const folderClickHandler = async (folder: string) => {
+    console.log('this is the selected folder');
+    console.log(folder);
+
+    const { data: folders } = await supabase
+      .from('folders')
+      .select('*')
+      .eq('user_id', state.user!.id)
+      .eq('name', folder);
+
+    if (!folders) return;
+    console.log(folders[0].id);
+    setFolder(folders[0]);
   };
 
   return (
@@ -116,7 +94,7 @@ const Dashboard = () => {
           placeholder="category"
           ref={categoryRef}
         />
-        <button onClick={setCategoryHandler}>Set Category</button>
+        <button onClick={setFolderHandler}>Set Category</button>
 
         <input
           type="file"
@@ -132,7 +110,7 @@ const Dashboard = () => {
             <li
               style={{ cursor: 'pointer' }}
               key={cat}
-              onClick={() => setCategory(cat)}
+              onClick={() => folderClickHandler(cat)}
             >
               {cat}
             </li>

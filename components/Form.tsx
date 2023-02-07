@@ -1,18 +1,12 @@
-import {
-  useState,
-  useRef,
-  useId,
-  FormEvent,
-  SetStateAction,
-  Dispatch,
-} from 'react';
+'use client';
+
+import { useState, useRef, useId, FormEvent } from 'react';
 import { supabase } from '../lib/subpabaseClient';
-import { User, Session } from '@supabase/supabase-js';
 import { useSupabaseContext } from '../store/app-context';
 import { setSession, setUser } from '../store/actionCreators';
 
 const Form = () => {
-  const [_, dispatch] = useSupabaseContext();
+  const [, dispatch] = useSupabaseContext();
   const id = useId();
 
   const [toSignIn, setToSignIn] = useState(true);
@@ -71,7 +65,7 @@ const Form = () => {
 
   return (
     <div>
-      <h1>Welcome to a journey thorugh your best memories</h1>
+      <h1>Welcome to a journey through your best memories</h1>
 
       <form onSubmit={formSubmitHandler}>
         <label htmlFor={`${id}-email`}>Email:</label>

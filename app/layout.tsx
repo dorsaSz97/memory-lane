@@ -1,3 +1,4 @@
+import SupabaseContextProvider  from '@/store/app-context';
 export default function RootLayout({
   children,
 }: {
@@ -6,7 +7,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body>{children}</body>
+      <SupabaseContextProvider>
+        <body>{children}</body>
+      </SupabaseContextProvider>
     </html>
   );
 }
