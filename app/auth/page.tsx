@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 
 import { supabase } from '../../lib/subpabaseClient';
 import { useSupabaseContext } from '../../store/app-context';
-import { setSession, setUser } from '../../store/actionCreators';
+import { setSession, setUser, setUserName } from '../../store/actionCreators';
 
 import Form from '@/components/Form';
 import { useRouter } from 'next/navigation';

@@ -86,7 +86,7 @@ const Dashboard = () => {
         <button type="button" onClick={signOutHandler}>
           sign out
         </button>
-        <h1>Your dashboard</h1>
+        <h1>Hello {state.userName}. This is Your dashboard</h1>
         <input
           type="text"
           name=""

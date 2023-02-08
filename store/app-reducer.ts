@@ -1,5 +1,5 @@
 import { ISupabaseState } from './app-state';
-import { SET_SESSION, SET_USER } from './actionTypes';
+import { SET_SESSION, SET_USER, SET_USERNAME } from './actionTypes';
 import { User, Session } from '@supabase/supabase-js';
 
 type actionTypes =
@@ -10,6 +10,10 @@ type actionTypes =
   | {
       type: 'setUser';
       payload: User | null;
+    }
+  | {
+      type: 'setUserName';
+      payload: string;
     };
 
 export const supabaseReducer = (
@@ -22,6 +26,9 @@ export const supabaseReducer = (
 
     case SET_USER:
       return { ...state, user: payload || null };
+
+    case SET_USERNAME:
+      return { ...state, userName: payload || '' };
 
     default:
       return state;

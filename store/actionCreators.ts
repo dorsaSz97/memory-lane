@@ -1,4 +1,4 @@
-import { SET_SESSION, SET_USER } from './actionTypes';
+import { SET_SESSION, SET_USER, SET_USERNAME } from './actionTypes';
 import { Session, User } from '@supabase/supabase-js';
 
 export const setSession = (session: Session | null) => {
@@ -7,4 +7,7 @@ export const setSession = (session: Session | null) => {
 
 export const setUser = (user: User | null) => {
   return { type: SET_USER, payload: user };
+};
+export const setUserName = (userName: string) => {
+  return { type: SET_USERNAME, payload: userName };
 };

@@ -3,16 +3,17 @@ import { supabase } from './lib/subpabaseClient';
 import { MyCookies } from './types';
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.match('/')) {
+  if (request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
-  if (request.nextUrl.pathname.match('/dashboard')) {
+  if (request.nextUrl.pathname === '/dashboard') {
     const cookies = request.cookies as MyCookies;
     const refreshToken = cookies.get('my-refresh-token');
     const accessToken = cookies.get('my-access-token');
 
     if (refreshToken && accessToken) {
+      console.log('hoy');
       supabase.auth
         .setSession({
           refresh_token: refreshToken.value,

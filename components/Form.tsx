@@ -1,24 +1,25 @@
 'use client';
 
-import { useState, useRef, useId, FormEvent } from 'react';
+import { useState, useId } from 'react';
 import { supabase } from '../lib/subpabaseClient';
 import { useSupabaseContext } from '../store/app-context';
-import { setSession, setUser } from '../store/actionCreators';
+import { setSession, setUser, setUserName } from '../store/actionCreators';
+import { Formik } from 'formik';
+import { IFormError, ISigninForm, ISignupForm } from '@/types';
+
+const initialSigninForm: ISigninForm = { email: '', password: '' };
+const initialSignupForm: ISignupForm = { email: '', password: '' };
 
 const Form = () => {
-  const [, dispatch] = useSupabaseContext();
+  const [state, dispatch] = useSupabaseContext();
   const id = useId();
 
   const [toSignIn, setToSignIn] = useState(true);
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const [emailError, setEmailError] = useState(false);
-  const passRef = useRef<HTMLInputElement | null>(null);
-  const [passError, setPassError] = useState(false);
 
-  const signInUser = async () => {
+  const signInUser = async (values: ISignupForm) => {
     let { data, error } = await supabase.auth.signInWithPassword({
-      email: emailRef.current!.value,
-      password: passRef.current!.value,
+      email: values.email,
+      password: values.password,
     });
 
     if (error) {
@@ -26,77 +27,113 @@ const Form = () => {
     }
 
     if (data && data.user && data.session) {
-      console.log('Hey you, welcome!');
       dispatch(setSession(data.session));
       dispatch(setUser(data.user));
     }
   };
 
-  const signUpUser = async () => {
+  const signUpUser = async (values: ISignupForm) => {
     let { data, error } = await supabase.auth.signUp({
-      email: emailRef.current!.value,
-      password: passRef.current!.value,
+      email: values.email,
+      password: values.password,
     });
+
+    dispatch(setUserName(values.name ?? ''));
 
     if (error) {
       alert(error.message);
     }
 
     if (data && data.user && data.session) {
-      console.log(
+      alert(
         'You are all signed up, you can now sign in and enjoy the experience'
       );
     }
-  };
-
-  const formSubmitHandler = (e: FormEvent) => {
-    e.preventDefault();
-
-    // At this point the two refs exist
-    if (!emailRef.current!.value) {
-      setEmailError(true);
-    }
-    if (!passRef.current!.value) {
-      setPassError(true);
-    }
-    if (emailRef.current!.value && passRef.current!.value)
-      toSignIn ? signInUser() : signUpUser();
   };
 
   return (
     <div>
       <h1>Welcome to a journey through your best memories</h1>
 
-      <form onSubmit={formSubmitHandler}>
-        <label htmlFor={`${id}-email`}>Email:</label>
-        <input type="email" name="email" id={`${id}-email`} ref={emailRef} />
-        {emailError && <p style={{ color: 'red' }}>Not right</p>}
-        <label htmlFor={`${id}-pass`}>Password:</label>
-        <input
-          type="password"
-          name="password"
-          id={`${id}-pass`}
-          ref={passRef}
-        />
-        {passError && <p style={{ color: 'red' }}>Not right</p>}
-        {toSignIn ? (
-          <button type="submit">Sign in</button>
-        ) : (
-          <button type="submit">Sign up</button>
-        )}
+      <Formik
+        initialValues={toSignIn ? initialSigninForm : initialSignupForm}
+        validate={values => {
+          const errors: IFormError = {};
+          if (!values.email) {
+            errors.email = 'Email is required';
+          } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+          ) {
+            errors.email = 'Invalid email address';
+          }
+          if (!values.password) {
+            errors.password = 'Password is required';
+          } else if (values.password.length < 6) {
+            errors.password = 'Password should be longer';
+          }
+          return errors;
+        }}
+        onSubmit={vals => {
+          toSignIn ? signInUser({ ...vals }) : signUpUser({ ...vals });
+        }}
+      >
+        {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <label htmlFor={`${id}-email`}>Email:</label>
+            <input
+              type="email"
+              name="email"
+              id={`${id}-email`}
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+            <label htmlFor={`${id}-pass`}>Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              id={`${id}-pass`}
+            />
+            {errors.password && (
+              <p style={{ color: 'red' }}>{errors.password}</p>
+            )}
+            {!toSignIn && (
+              <>
+                <label htmlFor={`${id}-name`}>Name:</label>
+                <input
+                  type="text"
+                  name="userName"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  id={`${id}-name`}
+                />
+              </>
+            )}
+            {toSignIn ? (
+              <button type="submit">Sign in</button>
+            ) : (
+              <button type="submit">Sign up</button>
+            )}
 
-        <div>
-          {toSignIn ? (
-            <button onClick={() => setToSignIn(false)}>
-              Don't have an account?
-            </button>
-          ) : (
-            <button onClick={() => setToSignIn(true)}>
-              Already have an account?
-            </button>
-          )}
-        </div>
-      </form>
+            <div>
+              {toSignIn ? (
+                <button onClick={() => setToSignIn(false)}>
+                  Don't have an account?
+                </button>
+              ) : (
+                <button onClick={() => setToSignIn(true)}>
+                  Already have an account?
+                </button>
+              )}
+            </div>
+          </form>
+        )}
+      </Formik>
     </div>
   );
 };
