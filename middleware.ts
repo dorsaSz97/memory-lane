@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
-  if (request.nextUrl.pathname === '/dashboard') {
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
     const cookies = request.cookies as MyCookies;
     const refreshToken = cookies.get('my-refresh-token');
     const accessToken = cookies.get('my-access-token');
@@ -27,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/'],
+  matcher: ['/dashboard/:path*', '/'],
 };

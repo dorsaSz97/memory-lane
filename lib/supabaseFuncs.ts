@@ -46,7 +46,8 @@ export const getImages = async (user: User, selectedFolder: IFolder) => {
 
     const userImages = images.map(img => img.url);
     return userImages;
-  } catch {
+  } catch (error) {
+    console.log(error);
     console.log('Something went wrong with getting the images');
   }
 };

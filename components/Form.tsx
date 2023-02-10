@@ -15,6 +15,7 @@ const Form = () => {
   const id = useId();
 
   const [toSignIn, setToSignIn] = useState(true);
+  const [signedUp, setSignedUp] = useState(false);
 
   const signInUser = async (values: ISignupForm) => {
     let { data, error } = await supabase.auth.signInWithPassword({
@@ -38,7 +39,7 @@ const Form = () => {
       password: values.password,
     });
 
-    dispatch(setUserName(values.name ?? ''));
+    dispatch(setUserName(values.name ?? 'stranger'));
 
     if (error) {
       alert(error.message);
@@ -74,10 +75,18 @@ const Form = () => {
           return errors;
         }}
         onSubmit={vals => {
+          setSignedUp(true);
           toSignIn ? signInUser({ ...vals }) : signUpUser({ ...vals });
         }}
       >
-        {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => (
           <form onSubmit={handleSubmit}>
             <label htmlFor={`${id}-email`}>Email:</label>
             <input
@@ -88,7 +97,9 @@ const Form = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+            {errors.email && touched.email && (
+              <p style={{ color: 'red' }}>{errors.email}</p>
+            )}
             <label htmlFor={`${id}-pass`}>Password:</label>
             <input
               type="password"
@@ -98,7 +109,7 @@ const Form = () => {
               onBlur={handleBlur}
               id={`${id}-pass`}
             />
-            {errors.password && (
+            {errors.password && touched.password && (
               <p style={{ color: 'red' }}>{errors.password}</p>
             )}
             {!toSignIn && (
