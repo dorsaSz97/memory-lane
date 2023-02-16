@@ -1,18 +1,14 @@
 import { ISupabaseState } from './app-state';
-import { SET_SESSION, SET_USER, SET_USERNAME } from './actionTypes';
-import { User, Session } from '@supabase/supabase-js';
+import { SET_USER, SET_USERNAME } from './actionTypes';
+import { User } from '@supabase/supabase-js';
 
 type actionTypes =
   | {
-      type: 'setSession';
-      payload: Session | null;
-    }
-  | {
-      type: 'setUser';
+      type: typeof SET_USER;
       payload: User | null;
     }
   | {
-      type: 'setUserName';
+      type: typeof SET_USERNAME;
       payload: string;
     };
 
@@ -21,9 +17,6 @@ export const supabaseReducer = (
   { type, payload }: actionTypes
 ): ISupabaseState => {
   switch (type) {
-    case SET_SESSION:
-      return { ...state, session: payload || null };
-
     case SET_USER:
       return { ...state, user: payload || null };
 

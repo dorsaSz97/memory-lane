@@ -1,40 +1,46 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState, useId, FormEvent } from 'react';
 import { supabase } from '../lib/subpabaseClient';
 import { useSupabaseContext } from '../store/app-context';
-import { setSession, setUser, setUserName } from '../store/actionCreators';
-import { Formik } from 'formik';
-import { IFormError, ISigninForm, ISignupForm } from '@/types';
+import { setUser, setUserName } from '../store/actionCreators';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
+import * as yup from 'yup';
 
-const initialSigninForm: ISigninForm = { email: '', password: '' };
-const initialSignupForm: ISignupForm = { email: '', password: '' };
+const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
+const validationSchema = yup.object().shape({
+  email: yup.string().email().required('Required'),
+  password: yup
+    .string()
+    .min(7, 'Password must be at least 7 characters long')
+    // .matches(!toSignIn ? passwordRules : null, {
+    //   message: 'Your password also has to have a number and one capital letter',
+    // })
+    .required('Required'),
+  name: yup.string(),
+});
 
 const Form = () => {
-  const [state, dispatch] = useSupabaseContext();
+  const [, dispatch] = useSupabaseContext();
   const id = useId();
 
   const [toSignIn, setToSignIn] = useState(true);
   const [signedUp, setSignedUp] = useState(false);
 
-  const signInUser = async (values: ISignupForm) => {
-    let { data, error } = await supabase.auth.signInWithPassword({
+  const signInUser = async (values: FormikValues) => {
+    console.log(values);
+    let { error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
 
     if (error) {
-      alert(error.message);
-    }
-
-    if (data && data.user && data.session) {
-      dispatch(setSession(data.session));
-      dispatch(setUser(data.user));
+      console.log('Something wrong with signing in the user' + error.message);
     }
   };
 
-  const signUpUser = async (values: ISignupForm) => {
-    let { data, error } = await supabase.auth.signUp({
+  const signUpUser = async (values: FormikValues) => {
+    let { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
     });
@@ -42,14 +48,17 @@ const Form = () => {
     dispatch(setUserName(values.name ?? 'stranger'));
 
     if (error) {
-      alert(error.message);
+      console.log('Something wrong with signing up the user' + error.message);
+    } else {
+      alert('You are a member now. You can sign in');
     }
+  };
 
-    if (data && data.user && data.session) {
-      alert(
-        'You are all signed up, you can now sign in and enjoy the experience'
-      );
-    }
+  const submitHandler = (vals: FormikValues, actions: any) => {
+    setSignedUp(true);
+    console.log(vals);
+    toSignIn ? signInUser(vals) : signUpUser(vals);
+    actions.resetForm();
   };
 
   return (
@@ -57,27 +66,9 @@ const Form = () => {
       <h1>Welcome to a journey through your best memories</h1>
 
       <Formik
-        initialValues={toSignIn ? initialSigninForm : initialSignupForm}
-        validate={values => {
-          const errors: IFormError = {};
-          if (!values.email) {
-            errors.email = 'Email is required';
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = 'Invalid email address';
-          }
-          if (!values.password) {
-            errors.password = 'Password is required';
-          } else if (values.password.length < 6) {
-            errors.password = 'Password should be longer';
-          }
-          return errors;
-        }}
-        onSubmit={vals => {
-          setSignedUp(true);
-          toSignIn ? signInUser({ ...vals }) : signUpUser({ ...vals });
-        }}
+        initialValues={{ email: '', password: '', name: '' }}
+        validationSchema={validationSchema}
+        onSubmit={submitHandler}
       >
         {({
           values,
@@ -86,8 +77,14 @@ const Form = () => {
           handleChange,
           handleBlur,
           handleSubmit,
+          resetForm,
         }) => (
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={(e: FormEvent) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <label htmlFor={`${id}-email`}>Email:</label>
             <input
               type="email"
@@ -117,7 +114,7 @@ const Form = () => {
                 <label htmlFor={`${id}-name`}>Name:</label>
                 <input
                   type="text"
-                  name="userName"
+                  name="name"
                   value={values.name}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -126,18 +123,34 @@ const Form = () => {
               </>
             )}
             {toSignIn ? (
+              // <button type="submit">Sign in</button>
               <button type="submit">Sign in</button>
             ) : (
+              // <button type="button" onClick={signUpUser}>
+              //   Sign up
+              // </button>
               <button type="submit">Sign up</button>
             )}
 
             <div>
               {toSignIn ? (
-                <button onClick={() => setToSignIn(false)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToSignIn(false);
+                    resetForm();
+                  }}
+                >
                   Don't have an account?
                 </button>
               ) : (
-                <button onClick={() => setToSignIn(true)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToSignIn(true);
+                    resetForm();
+                  }}
+                >
                   Already have an account?
                 </button>
               )}

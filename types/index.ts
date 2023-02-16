@@ -22,3 +22,6 @@ export interface IFormError {
   email?: string;
   password?: string;
 }
+
+// Props Type
+export type FolderDetailProps = {};

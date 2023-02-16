@@ -1,7 +1,8 @@
 import { supabase } from './subpabaseClient';
 import { useSupabaseContext } from '../store/app-context';
 import { ISupabaseState } from '../store/app-state';
-import { User } from '@supabase/supabase-js';
+import { User, PostgrestResponse } from '@supabase/supabase-js';
+import { cache } from 'react';
 
 export interface IFolder {
   id: any;
@@ -15,7 +16,7 @@ export interface IImage {
   folder_id: number;
 }
 
-export const getFolders = async (user: User) => {
+export const getFolders = cache(async (user: User) => {
   try {
     const { data: folders, error: foldersError } = await supabase
       .from('folders')
@@ -28,6 +29,23 @@ export const getFolders = async (user: User) => {
     return userFolders;
   } catch {
     console.log('Something went wrong with getting the folders');
+  }
+});
+
+export const getFolder = async (user: User, folderName: string) => {
+  try {
+    const { data }: PostgrestResponse<IFolder> = await supabase
+      .from('folders')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('name', folderName);
+
+    if (!data || data.length === 0 || !data[0]) throw new Error();
+
+    const folder = data[0];
+    return folder;
+  } catch {
+    console.log('Something went wrong with getting the selected folder');
   }
 };
 
@@ -54,21 +72,22 @@ export const getImages = async (user: User, selectedFolder: IFolder) => {
 
 export const uploadImage = async (
   user: User,
-  image: File,
-  selectedFolder: IFolder
+  imageFile: File,
+  currentFolder: IFolder
 ) => {
+  const imagePath = imageFile.name;
   try {
-    await supabase.storage.from('memories').upload(`${image.name}`, image);
+    // uploading the image to the bucket
+    await supabase.storage.from('memories').upload(imagePath, imageFile);
 
-    const url = supabase.storage.from('memories').getPublicUrl(`${image.name}`)
+    // getting the image's url
+    const imageUrl = supabase.storage.from('memories').getPublicUrl(imagePath)
       .data.publicUrl;
 
-    console.log('this is image url');
-    console.log(url);
-
+    // inserting a new image row
     await supabase
       .from('images')
-      .insert([{ user_id: user.id, url: url, folder_id: selectedFolder.id }]);
+      .insert({ user_id: user.id, url: imageUrl, folder_id: currentFolder.id });
   } catch {
     console.log('Something went wrong with uploading the image');
   }
