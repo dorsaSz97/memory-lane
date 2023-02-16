@@ -1,5 +1,6 @@
+'use client';
 import React from 'react';
-import { useSupabaseContext } from '../store/app-context';
+import { useSupabaseContext } from '@/store/app-context';
 
 const WelcomeMessage = () => {
   const [state] = useSupabaseContext();

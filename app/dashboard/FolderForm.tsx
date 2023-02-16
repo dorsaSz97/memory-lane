@@ -1,3 +1,4 @@
+'use client';
 import React, { useRef, useState } from 'react';
 import { uploadFolder } from '@/lib/supabaseFuncs';
 import { useSupabaseContext } from '@/store/app-context';

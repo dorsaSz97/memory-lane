@@ -1,5 +1,6 @@
 import SupabaseContextProvider from '@/store/app-context';
 import { Oswald } from '@next/font/google';
+import './global.css';
 
 const oswald = Oswald({
   subsets: ['latin'],

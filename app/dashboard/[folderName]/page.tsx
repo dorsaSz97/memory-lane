@@ -3,6 +3,17 @@
 import Link from 'next/link';
 import Heading from '@/components/ui/Heading';
 import FolderDetails from './FolderDetails';
+// import type { Metadata } from 'next';
+
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: any;
+// }): Promise<Metadata | undefined> {
+//   console.log(params);
+//   if (!params.folderName) return;
+//   return { title: params.folderName };
+// }
 
 type FolderDetailProps = {
   params: {

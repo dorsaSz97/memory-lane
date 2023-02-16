@@ -1,5 +1,5 @@
-import Form from './Form';
+import FormContainer from './FormContainer';
 
 export default function AuthPage() {
-  return <Form />;
+  return <FormContainer />;
 }

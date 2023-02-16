@@ -1,5 +1,6 @@
+'use client';
 import React from 'react';
-import { supabase } from '../lib/subpabaseClient';
+import { supabase } from '../../lib/subpabaseClient';
 
 const SignoutButton = () => {
   const signOutHandler = async () => {
