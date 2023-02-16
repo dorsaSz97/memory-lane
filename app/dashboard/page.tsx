@@ -1,6 +1,6 @@
-import SignoutButton from '@/components/SignoutButton';
-import WelcomeMessage from '@/components/WelcomeMessage';
-import FolderForm from '@/components/FolderForm';
+import SignoutButton from './SignoutButton';
+import WelcomeMessage from './WelcomeMessage';
+import FolderForm from './FolderForm';
 import FoldersSection from './FoldersSection';
 
 const DashboardPage = () => {
