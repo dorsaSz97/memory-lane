@@ -1,5 +1,7 @@
 import SupabaseContextProvider from '@/store/app-context';
 import { Oswald } from '@next/font/google';
+import type { Metadata } from 'next';
+
 import './global.css';
 
 const oswald = Oswald({
@@ -13,7 +15,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={oswald.className}>
-      <head />
       <SupabaseContextProvider>
         <body>
           <header>
