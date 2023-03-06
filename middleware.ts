@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { MyCookies } from './types';
+import { supabase } from './lib/subpabaseClient';
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/auth', request.url));
+  // const cookies = request.cookies as MyCookies;
+  // const refreshToken = cookies.get('my-refresh-token');
+  // const accessToken = cookies.get('my-access-token');
+
+  if (
+    request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname === '/auth'
+  ) {
+    return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   }
 
   // if (request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   const cookies = request.cookies as MyCookies;
-  //   const refreshToken = cookies.get('my-refresh-token');
-  //   const accessToken = cookies.get('my-access-token');
-
+  //   console.log(refreshToken);
+  //   console.log(accessToken);
   //   if (refreshToken && accessToken) {
-  //     console.log('hoy');
   //     supabase.auth
   //       .setSession({
   //         refresh_token: refreshToken.value,
@@ -19,12 +25,11 @@ export async function middleware(request: NextRequest) {
   //       })
   //       .then(_ => NextResponse.next());
   //   } else {
-  //     return NextResponse.redirect(new URL('/', request.url));
+  //     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   //   }
   // }
 }
 
 export const config = {
-  // matcher: ['/dashboard/:path*', '/'],
-  matcher: ['/'],
+  matcher: ['/', '/auth'],
 };

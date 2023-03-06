@@ -1,9 +1,7 @@
-import React from 'react';
-
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <aside>sth is here for testing purposes</aside>
+      <p>Are you ready to experience your best memories all over again?</p>
       {children}
     </>
   );

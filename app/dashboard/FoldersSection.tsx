@@ -1,16 +1,20 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { getFolders } from '@/lib/supabaseFuncs';
 import { useSupabaseContext } from '@/store/app-context';
 
-const FoldersSection = () => {
+const FoldersSection = ({
+  folders,
+  setFolders,
+}: {
+  folders: string[] | null;
+  setFolders: React.Dispatch<React.SetStateAction<string[] | null>>;
+}) => {
   const [state] = useSupabaseContext();
   const currentUser = state.user;
 
   if (!currentUser) return <></>;
-
-  const [folders, setFolders] = useState<string[] | null>(null);
 
   useEffect(() => {
     getFolders(currentUser).then(

@@ -1,6 +1,4 @@
 import { supabase } from './subpabaseClient';
-import { useSupabaseContext } from '../store/app-context';
-import { ISupabaseState } from '../store/app-state';
 import { User, PostgrestResponse } from '@supabase/supabase-js';
 import { cache } from 'react';
 
