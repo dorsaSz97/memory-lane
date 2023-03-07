@@ -6,5 +6,10 @@ export const metadata: Metadata = {
 };
 
 export default function SignupPage() {
-  return <SignupForm />;
+  return (
+    <>
+      <h1 className="text-3xl capitalize">Sign up</h1>
+      <SignupForm />
+    </>
+  );
 }

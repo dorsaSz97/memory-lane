@@ -16,6 +16,9 @@ module.exports = {
         primary: '#efeee9',
         dark: '#1f1e1a',
       },
+      backgroundImage: {
+        blob: "url('/blob.svg')",
+      },
     },
   },
   plugins: [],

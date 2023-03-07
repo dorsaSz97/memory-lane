@@ -7,6 +7,7 @@ import { setUserName } from '@/store/actionCreators';
 import { Formik, Form, FormikValues } from 'formik';
 import * as yup from 'yup';
 import CustomInput from './CustomInput';
+import SubmitButton from './SubmitButton';
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
 const validationSchema = yup.object().shape({
@@ -33,9 +34,9 @@ const SignupForm = () => {
 
     if (error) {
       alert('Something wrong with signing up the user' + error.message);
+      router.refresh();
     } else {
       dispatch(setUserName(values.username));
-      alert('You are a member now. You can sign in');
     }
   };
 
@@ -52,7 +53,7 @@ const SignupForm = () => {
         onSubmit={submitHandler}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <Form className="flex flex-col gap-6">
             <CustomInput
               label="Email"
               name="email"
@@ -71,10 +72,7 @@ const SignupForm = () => {
               type="text"
               placeholder="Enter your name"
             />
-
-            <button type="submit" disabled={isSubmitting}>
-              Sign up
-            </button>
+            <SubmitButton btnText="Sign up" isSubmitting={isSubmitting} />
           </Form>
         )}
       </Formik>

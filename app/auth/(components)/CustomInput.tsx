@@ -12,12 +12,30 @@ const CustomInput = ({
   placeholder: string;
 }) => {
   const [field, meta] = useField(props);
+
   return (
-    <>
-      <label htmlFor={field.name}>{label}</label>
-      <input {...field} />
-      {meta.touched && meta.error && <div>{meta.error}</div>}
-    </>
+    <div className="flex flex-col gap-3 justify-between">
+      <div className="flex gap-3 justify-between items-center">
+        <label htmlFor={props.name} className="self-end">
+          {label}
+        </label>
+        <input
+          id={props.name}
+          {...props}
+          {...field}
+          className="w-[16rem] border-b-[1px] border-dark p-2 text-sm font-sans placeholder:font-gaiaDisplay"
+        />
+      </div>
+      {
+        <p
+          className={`h-[20px] transition-all text-sm text-red-500 ${
+            meta.touched && meta.error ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {meta?.error}
+        </p>
+      }
+    </div>
   );
 };
 

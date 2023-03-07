@@ -6,5 +6,10 @@ export const metadata: Metadata = {
 };
 
 export default function SigninPage() {
-  return <SigninForm />;
+  return (
+    <>
+      <h1 className="text-3xl capitalize">Sign in</h1>
+      <SigninForm />
+    </>
+  );
 }

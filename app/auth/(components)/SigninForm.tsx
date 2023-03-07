@@ -2,15 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikErrors,
-  FormikValues,
-} from 'formik';
+import { Formik, Form, FormikErrors, FormikValues } from 'formik';
 import { supabase } from '@/lib/subpabaseClient';
+import CustomInput from './CustomInput';
+import SubmitButton from './SubmitButton';
 
 const SigninForm = () => {
   const [formError, setError] = useState<string>('');
@@ -36,6 +31,7 @@ const SigninForm = () => {
 
   return (
     <>
+    
       <Formik
         initialValues={{ email: '', password: '' }}
         validate={values => {
@@ -56,31 +52,21 @@ const SigninForm = () => {
         onSubmit={submitHandler}
       >
         {({ isSubmitting }) => (
-          <Form className="flex-col">
-            <Field
+          <Form className="flex flex-col gap-6">
+            <CustomInput
               type="email"
               name="email"
-              className="border-slate-900 border-2"
+              label="Email"
+              placeholder="Enter your email address"
             />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-red-500"
-            />
-            <Field
+            <CustomInput
               type="password"
               name="password"
-              className="border-slate-900 border-2"
-            />
-            <ErrorMessage
-              name="password"
-              component="div"
-              className="text-red-500"
+              label="Password"
+              placeholder="Enter your Password"
             />
 
-            <button type="submit" disabled={isSubmitting}>
-              Sign in
-            </button>
+            <SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />
           </Form>
         )}
       </Formik>
@@ -91,7 +77,7 @@ const SigninForm = () => {
         }}
       >
         Don't have an account?
-      </button>{' '}
+      </button>
     </>
   );
 };
