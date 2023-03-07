@@ -3,11 +3,7 @@ import React, { useRef, useState } from 'react';
 import { uploadFolder } from '@/lib/supabaseFuncs';
 import { useSupabaseContext } from '@/store/app-context';
 
-const FolderUploader = ({
-  setFolders,
-}: {
-  setFolders: React.Dispatch<React.SetStateAction<string[] | null>>;
-}) => {
+const FolderUploader = () => {
   const [state] = useSupabaseContext();
   const currentUser = state.user;
 
@@ -19,7 +15,6 @@ const FolderUploader = ({
   const setFolderHandler = async () => {
     try {
       const folder = await uploadFolder(currentUser, folderRef.current!.value);
-      setFolders(prev => prev?.concat(folder!.name) || [folder!.name]);
       setShowInput(false);
     } catch (error) {
       console.log(error);
@@ -27,20 +22,29 @@ const FolderUploader = ({
   };
 
   return (
-    <div>
+    <div className="flex relative justify-center">
       {showInput && (
-        <>
+        <div className="absolute top-[-100%] left-1/2 right-1/2 translate-x-[-50%]  bg-primary flex gap-5 p-[1rem] rounded-[7px] w-fit">
           <input
             type="text"
             name="folder-name"
             id="folder-name"
             placeholder="folder"
             ref={folderRef}
+            className="rounded-[5px] p-[0.4rem]"
           />
-          <button onClick={setFolderHandler}>Add folder</button>
-        </>
+
+          <button
+            onClick={setFolderHandler}
+            className="rounded-[5px] p-[0.4rem] whitespace-nowrap"
+          >
+            Add folder
+          </button>
+        </div>
       )}
-      <button onClick={() => setShowInput(true)}>+</button>;
+      <button className="text-[4rem] " onClick={() => setShowInput(!showInput)}>
+        +
+      </button>
     </div>
   );
 };

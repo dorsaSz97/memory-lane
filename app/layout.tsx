@@ -33,10 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gaiaDisplay.variable} font-gaiaDisplay`}>
       <SupabaseContextProvider>
-        <body className="flex flex-col justify-between items-center h-screen w-full bg-primary bg-opacity-50 text-dark">
-          <main className="flex justify-center items-center my-auto">
-            {children}
-          </main>
+        <body className="flex flex-col justify-between items-center h-screen w-[100%] bg-primary bg-opacity-50 text-dark">
+          <main className="w-full h-full">{children}</main>
+
           <footer className="p-2 font-sans text-xs">
             <p>
               &copy; All the rights belong to Rolf Jensen (the designer) & Dorsa

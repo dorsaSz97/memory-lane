@@ -11,12 +11,11 @@ export const metadata: Metadata = {
 
 const DashboardPage = () => {
   return (
-    <>
-      <SignoutButton />
-      <WelcomeMessage />
-
+    <div className="flex flex-col h-full">
+      {/* <WelcomeMessage /> */}
       <MainDashboard />
-    </>
+      <SignoutButton />
+    </div>
   );
 };
 

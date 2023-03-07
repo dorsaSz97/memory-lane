@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/subpabaseClient';
 import { useSupabaseContext } from '@/store/app-context';
@@ -8,6 +9,7 @@ import { Formik, Form, FormikValues } from 'formik';
 import * as yup from 'yup';
 import CustomInput from './CustomInput';
 import SubmitButton from './SubmitButton';
+import Spinner from '../../../components/ui/Spinner';
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
 const validationSchema = yup.object().shape({
@@ -24,6 +26,7 @@ const validationSchema = yup.object().shape({
 
 const SignupForm = () => {
   const [, dispatch] = useSupabaseContext();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const signUpUser = async (values: FormikValues) => {
@@ -40,8 +43,13 @@ const SignupForm = () => {
     }
   };
 
-  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {
-    signUpUser(values);
+  const submitHandler = async (
+    values: FormikValues,
+    { setSubmitting }: any
+  ) => {
+    setIsLoading(true);
+    await signUpUser(values);
+    setIsLoading(false);
     setSubmitting(false);
   };
 
@@ -72,7 +80,11 @@ const SignupForm = () => {
               type="text"
               placeholder="Enter your name"
             />
-            <SubmitButton btnText="Sign up" isSubmitting={isSubmitting} />
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <SubmitButton btnText="Sign up" isSubmitting={isSubmitting} />
+            )}
           </Form>
         )}
       </Formik>

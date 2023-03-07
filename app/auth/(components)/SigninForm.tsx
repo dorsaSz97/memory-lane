@@ -6,9 +6,11 @@ import { Formik, Form, FormikErrors, FormikValues } from 'formik';
 import { supabase } from '@/lib/subpabaseClient';
 import CustomInput from './CustomInput';
 import SubmitButton from './SubmitButton';
+import Spinner from '../../../components/ui/Spinner';
 
 const SigninForm = () => {
   const [formError, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const signInUser = async (values: FormikValues) => {
@@ -24,14 +26,13 @@ const SigninForm = () => {
     }
   };
 
-  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {
-    signInUser(values);
+  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {setIsLoading(true);
+    signInUser(values);setIsLoading(false);
     setSubmitting(false);
   };
 
   return (
     <>
-    
       <Formik
         initialValues={{ email: '', password: '' }}
         validate={values => {
@@ -66,7 +67,7 @@ const SigninForm = () => {
               placeholder="Enter your Password"
             />
 
-            <SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />
+            {isLoading? <Spinner /> :<SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />}
           </Form>
         )}
       </Formik>

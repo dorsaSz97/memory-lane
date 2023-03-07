@@ -23,12 +23,12 @@ const CustomInput = ({
           id={props.name}
           {...props}
           {...field}
-          className="w-[16rem] border-b-[1px] border-dark p-2 text-sm font-sans placeholder:font-gaiaDisplay"
+          className="w-[16rem] border-b-[1px] border-dark p-2 text-sm font-sans placeholder:font-gaiaDisplay outline-primary"
         />
       </div>
       {
         <p
-          className={`h-[20px] transition-all text-sm text-red-500 ${
+          className={`h-[20px] w-[90%] transition-all text-sm text-red-500 ${
             meta.touched && meta.error ? 'opacity-100' : 'opacity-0'
           }`}
         >
