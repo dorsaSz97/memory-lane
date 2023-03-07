@@ -6,10 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function SigninPage() {
-  return (
-    <>
-      <SigninForm />
-     
-    </>
-  );
+  return <SigninForm />;
 }

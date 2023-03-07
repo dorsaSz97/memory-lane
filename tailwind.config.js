@@ -12,6 +12,10 @@ module.exports = {
       fontFamily: {
         gaiaDisplay: 'var(--font-gaiaDisplay)',
       },
+      colors: {
+        primary: '#efeee9',
+        dark: '#1f1e1a',
+      },
     },
   },
   plugins: [],

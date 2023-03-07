@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import localFont from '@next/font/local';
+import localFont from 'next/font/local';
 import SupabaseContextProvider from '@/store/app-context';
 import './global.css';
 
@@ -33,19 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gaiaDisplay.variable} font-gaiaDisplay`}>
       <SupabaseContextProvider>
-        <body>
-          {/* Header */}
-          <header>
-            <h1>MemoryLane</h1>
-            <p>Travel through your best memories</p>
-          </header>
-          {/* Main */}
-          <main>{children}</main>
-          {/* Footer */}
-          <footer>
+        <body className="flex flex-col justify-between items-center h-screen w-full bg-primary bg-opacity-50 text-dark">
+          <main className="flex justify-center items-center my-auto">
+            {children}
+          </main>
+          <footer className="p-2 font-sans text-xs">
             <p>
-              &copy; All the rights from the design belong to Rolf Jensen & from
-              the development to Dorsa Safari Zadeh
+              &copy; All the rights belong to Rolf Jensen (the designer) & Dorsa
+              Safari Zadeh (the developer)
             </p>
           </footer>
         </body>
