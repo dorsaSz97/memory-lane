@@ -38,6 +38,9 @@ export const getFolder = async (user: User, folderName: string) => {
       .eq('user_id', user.id)
       .eq('name', folderName);
 
+    console.log('data');
+    console.log(data);
+
     if (!data || data.length === 0 || !data[0]) throw new Error();
 
     const folder = data[0];
@@ -79,6 +82,14 @@ export const uploadImage = async (
     await supabase.storage.from('memories').upload(imagePath, imageFile);
 
     // getting the image's url
+    // const imageUrl = supabase.storage.from('memories').getPublicUrl(imagePath, {
+    //   transform: {
+    //     width: 400,
+    //     height: 400,
+    //     resize: 'contain',
+    //     // format: 'origin',
+    //   },
+    // }).data.publicUrl;
     const imageUrl = supabase.storage.from('memories').getPublicUrl(imagePath)
       .data.publicUrl;
 

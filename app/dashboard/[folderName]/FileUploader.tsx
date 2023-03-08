@@ -35,8 +35,20 @@ const FileUploader = ({ currentFolder }: { currentFolder: IFolder }) => {
   };
 
   return (
-    <form>
-      <label htmlFor="memory-image">Upload your memory: </label>
+    // position: absolute;
+    // top: -100%;
+    // flex-direction: column;
+    // display: flex;
+    // right: 50%;
+    // gap: 2rem;
+    // width: fit-content;
+    // transform: translateX(50%);
+    // align-items: center;
+
+    <form className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[110%] top-0 p-3 rounded-[5px] shadow-2xl">
+      <label htmlFor="memory-image" className="text-[2rem]">
+        Your memory:{' '}
+      </label>
       <input
         type="file"
         name="memory-image"

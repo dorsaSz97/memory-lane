@@ -12,6 +12,9 @@ module.exports = {
       fontFamily: {
         gaiaDisplay: 'var(--font-gaiaDisplay)',
       },
+      gridTemplateColumns: {
+        fluid: 'repeat(auto-fit, minmax(300px, 1fr))',
+      },
       colors: {
         primary: '#efeee9',
         dark: '#1f1e1a',

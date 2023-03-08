@@ -8,11 +8,10 @@ import FolderDetails from './FolderDetails';
 export async function generateMetadata({
   params,
 }: {
-  params: any;
+  params: { folderName: string };
 }): Promise<Metadata | undefined> {
-  console.log(params);
   if (!params.folderName) return;
-  return { title: params.folderName };
+  return { title: params.folderName.toUpperCase() };
 }
 
 type FolderDetailProps = {
@@ -25,16 +24,21 @@ const FolderDetailPage = (props: FolderDetailProps) => {
   const folderName = props.params.folderName;
 
   return (
-    <>
+    <div className="flex flex-col h-full p-4">
       {/* back button */}
-      <Link href="/dashboard">Visit all folders</Link>
-
+      <Link href="/dashboard" className="text-lg text-underline">
+        Visit all folders
+      </Link>
       {/* folder name */}
-      <Heading Element={'h1'} title={folderName} />
+      <Heading
+        Element={'h1'}
+        title={folderName}
+        className="my-[2rem] text-[10rem] self-center"
+      />
 
       {/* images */}
       <FolderDetails folderName={folderName} />
-    </>
+    </div>
   );
 };
 

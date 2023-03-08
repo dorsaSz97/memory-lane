@@ -7,8 +7,9 @@ const nextConfig = {
   },
   images: {
     domains: ['mxnwsaviwndgdcirtndd.supabase.co'],
+    // loader: 'custom',
+    // loaderFile: './supabase-image-loader.js',
   },
-
   // this way of redirecting cant have a logic, but we need one => middleware
   // async redirects() {
   //   return [

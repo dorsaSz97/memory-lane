@@ -33,8 +33,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gaiaDisplay.variable} font-gaiaDisplay`}>
       <SupabaseContextProvider>
-        <body className="flex flex-col justify-between items-center h-screen w-[100%] bg-primary bg-opacity-50 text-dark">
-          <main className="w-full h-full">{children}</main>
+        <body className="relative flex flex-col justify-between items-center w-[100%] bg-primary bg-opacity-50 text-dark">
+          <main className="w-full ">{children}</main>
 
           <footer className="p-2 font-sans text-xs">
             <p>

@@ -13,6 +13,7 @@ const FolderDetails = ({ folderName }: { folderName: string }) => {
   const [showFileUploader, setShowFileUploader] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[] | null>(null);
 
+  console.log(folder);
   const loadImages = async (folder: IFolder) => {
     const data = await getImages(state.user!, folder);
 
@@ -22,19 +23,14 @@ const FolderDetails = ({ folderName }: { folderName: string }) => {
   };
 
   useEffect(() => {
-    const prepareComponent = async () => {
+    (async () => {
       if (!state.user) return;
-
       const selectedFolder = await getFolder(state.user, folderName);
-
       if (!selectedFolder) return;
-
       setFolder(selectedFolder);
       await loadImages(selectedFolder);
-    };
-
-    prepareComponent();
-  }, []);
+    })();
+  }, [folderName]);
 
   useEffect(() => {
     const channel = supabase
@@ -58,10 +54,17 @@ const FolderDetails = ({ folderName }: { folderName: string }) => {
   }, [imageUrls]);
 
   return (
-    <div>
-      <button onClick={() => setShowFileUploader(prev => !prev)}>+</button>
-      {showFileUploader && folder && <FileUploader currentFolder={folder} />}
+    <div className="mt-auto w-full flex- flex-col gap-10">
       {imageUrls && <ImageGallery imageUrls={imageUrls} />}
+      <div className="relative flex justify-center">
+        <button
+          className="text-[7rem]"
+          onClick={() => setShowFileUploader(!showFileUploader)}
+        >
+          +
+        </button>
+        {showFileUploader && folder && <FileUploader currentFolder={folder} />}
+      </div>
     </div>
   );
 };
