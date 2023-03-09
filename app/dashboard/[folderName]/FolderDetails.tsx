@@ -5,7 +5,7 @@ import { getFolder, getImages, IFolder } from '@/lib/supabaseFuncs';
 import FileUploader from './FileUploader';
 import ImageGallery from './ImageGallery';
 import { useSupabaseContext } from '@/store/app-context';
-import { supabase } from '@/lib/subpabaseClient';
+import supabase from '@/lib/subpabaseClient-client';
 
 const FolderDetails = ({ folderName }: { folderName: string }) => {
   const [state] = useSupabaseContext();

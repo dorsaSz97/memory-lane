@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, FormikErrors, FormikValues } from 'formik';
-import { supabase } from '@/lib/subpabaseClient';
+import supabase from '@/lib/subpabaseClient-client';
 import CustomInput from './CustomInput';
 import SubmitButton from './SubmitButton';
 import Spinner from '../../../components/ui/Spinner';
@@ -26,8 +26,10 @@ const SigninForm = () => {
     }
   };
 
-  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {setIsLoading(true);
-    signInUser(values);setIsLoading(false);
+  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {
+    setIsLoading(true);
+    signInUser(values);
+    setIsLoading(false);
     setSubmitting(false);
   };
 
@@ -67,7 +69,11 @@ const SigninForm = () => {
               placeholder="Enter your Password"
             />
 
-            {isLoading? <Spinner /> :<SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />}
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />
+            )}
           </Form>
         )}
       </Formik>

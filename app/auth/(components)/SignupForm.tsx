@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/subpabaseClient';
+import supabase from '@/lib/subpabaseClient-client';
 import { useSupabaseContext } from '@/store/app-context';
 import { setUserName } from '@/store/actionCreators';
 import { Formik, Form, FormikValues } from 'formik';

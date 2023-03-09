@@ -1,5 +1,4 @@
-import { cache } from 'react';
-import { supabase } from './subpabaseClient';
+import supabase from './subpabaseClient-client';
 import { User, PostgrestResponse } from '@supabase/supabase-js';
 
 export interface IFolder {
@@ -14,7 +13,7 @@ export interface IImage {
   folder_id: number;
 }
 
-export const getFolders = cache(async (user: User) => {
+export const getFolders = async (user: User) => {
   try {
     const { data: folders, error: foldersError } = await supabase
       .from('folders')
@@ -28,7 +27,7 @@ export const getFolders = cache(async (user: User) => {
   } catch {
     console.log('Something went wrong with getting the folders');
   }
-});
+};
 
 export const getFolder = async (user: User, folderName: string) => {
   try {
@@ -102,16 +101,14 @@ export const uploadImage = async (
   }
 };
 
-export const uploadFolder = async (user: User, name: string) => {
+export const uploadFolder = async (user: User, folderName: string) => {
   try {
-    const { data: folder, error: folderError } = await supabase
+    const { error } = await supabase
       .from('folders')
-      .insert([{ name: name, user_id: user.id }])
-      .select();
+      .insert([{ name: folderName, user_id: user.id }]);
 
-    if (!folder || folderError) throw new Error();
-    return folder![0] as IFolder;
-  } catch {
-    console.log('Something went wrong with uploading the folder');
+    if (error) throw new Error(error.message);
+  } catch (err) {
+    console.log('Something went wrong with uploading the folder' + err);
   }
 };

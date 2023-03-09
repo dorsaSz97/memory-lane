@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MyCookies } from './types';
-import { supabase } from './lib/subpabaseClient';
 
 export async function middleware(request: NextRequest) {
-  // const cookies = request.cookies as MyCookies;
-  // const refreshToken = cookies.get('my-refresh-token');
-  // const accessToken = cookies.get('my-access-token');
-
-  if (
-    request.nextUrl.pathname === '/' ||
-    request.nextUrl.pathname === '/auth'
-  ) {
+  if (request.nextUrl.pathname.startsWith('/auth')) {
     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   }
 
@@ -31,5 +22,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/auth'],
+  matcher: ['/auth'],
 };

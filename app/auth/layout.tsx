@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import Image from 'next/image';
 import cameraImage from '@/public/camera.png';
 
-const layout = ({ children }: { children: ReactNode }) => {
+export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex justify-center items-center my-auto h-full">
       <section className="flex rounded-lg shadow-2xl overflow-hidden">
@@ -18,6 +18,4 @@ const layout = ({ children }: { children: ReactNode }) => {
       </section>
     </div>
   );
-};
-
-export default layout;
+}

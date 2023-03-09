@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import SupabaseContextProvider from '@/store/app-context';
 import './global.css';
+import createClient from '@/lib/subpabaseClient-server';
+
+export const revalidate = 0;
 
 const gaiaDisplay = localFont({
   src: [
@@ -25,16 +28,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const accessToken = session?.access_token || null;
+
   return (
-    <html lang="en" className={`${gaiaDisplay.variable} font-gaiaDisplay`}>
-      <SupabaseContextProvider>
-        <body className="relative flex flex-col justify-between items-center w-[100%] bg-primary bg-opacity-50 text-dark">
-          <main className="w-full ">{children}</main>
+    <html
+      lang="en"
+      className={`${gaiaDisplay.variable} font-gaiaDisplay h-full w-full`}
+    >
+      <SupabaseContextProvider accessToken={accessToken}>
+        <body className="relative flex flex-col items-center w-full h-full bg-primary bg-opacity-50 text-dark">
+          <main className="w-full flex-1">{children}</main>
 
           <footer className="p-2 font-sans text-xs">
             <p>

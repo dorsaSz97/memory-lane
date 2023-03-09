@@ -1,36 +1,66 @@
 'use client';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+
+import { useEffect, useState, Suspense, useRef } from 'react';
+import { User } from '@supabase/supabase-js';
+import supabase from '@/lib/subpabaseClient-client';
 import { getFolders } from '@/lib/supabaseFuncs';
-import { useSupabaseContext } from '@/store/app-context';
+import Link from 'next/link';
 
-type Props = {
-  folders: string[] | null;
-  setFolders: React.Dispatch<React.SetStateAction<string[] | null>>;
-};
-const FoldersSection = forwardRef((props: Props, ref: any) => {
-  const [state] = useSupabaseContext();
-  const currentUser = state.user;
-
-  if (!currentUser) return <></>;
+const FoldersSection = ({
+  user,
+  userFolders,
+}: {
+  user: User;
+  userFolders: { name: string }[] | null;
+}) => {
+  const [folders, setFolders] = useState<string[] | null>(
+    userFolders?.map(folder => folder.name) || null
+  );
+  const ref = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
-    getFolders(currentUser).then(
-      data => data && props.setFolders(data.map(cat => cat))
-    );
-  }, [currentUser.id]);
+    ref.current?.scrollTo({
+      left: ref.current!.scrollWidth + 1000,
+      behavior: 'smooth',
+    });
+  }, [folders]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'folders' },
+        payload => {
+          if (payload.eventType === 'INSERT') {
+            const newFolder = payload.new;
+
+            setFolders(prev =>
+              prev ? [...prev, newFolder.name] : [newFolder.name]
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
-    <div className="my-auto self-center text-[7rem] w-full">
-      {!props.folders || props.folders?.length === 0 ? (
-        <p>No folder. Maybe add one?</p>
-      ) : (
+    <>
+      {!folders && <p>Loading....</p>}
+      {folders && folders.length === 0 && (
+        <p>No folder added yet. Maybe add one?</p>
+      )}
+      {folders && folders.length > 0 && (
         <div className="overflow-hidden w-full p-4 h-fit">
           <ul
             className="flex gap-10 overflow-x-scroll h-full text-dark scrollbar"
             ref={ref}
           >
-            {props.folders.map(folder => (
+            {folders.map(folder => (
               <li
                 style={{ cursor: 'pointer' }}
                 key={folder}
@@ -44,8 +74,8 @@ const FoldersSection = forwardRef((props: Props, ref: any) => {
           </ul>
         </div>
       )}
-    </div>
+    </>
   );
-});
+};
 
 export default FoldersSection;

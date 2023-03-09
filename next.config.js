@@ -11,15 +11,15 @@ const nextConfig = {
     // loaderFile: './supabase-image-loader.js',
   },
   // this way of redirecting cant have a logic, but we need one => middleware
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: '/',
-  //       destination: '/auth',
-  //       // permanent: true,
-  //     },
-  //   ];
-  // },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/auth',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
