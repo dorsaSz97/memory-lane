@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/types/supabase';
 
-export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/auth')) {
+export async function middleware(request: NextRequest, response: NextResponse) {
+  const supabase = createMiddlewareSupabaseClient<Database>({
+    req: request,
+    res: response,
+  });
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session?.user) {
+    if (request.nextUrl.pathname.startsWith('/auth')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    } else {
+      return NextResponse.next();
+    }
+  }
+
+  if (
+    request.nextUrl.pathname === '/auth' ||
+    request.nextUrl.pathname.startsWith('/dashboard')
+  ) {
     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   }
 
-  // if (request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   console.log(refreshToken);
-  //   console.log(accessToken);
-  //   if (refreshToken && accessToken) {
-  //     supabase.auth
-  //       .setSession({
-  //         refresh_token: refreshToken.value,
-  //         access_token: accessToken.value,
-  //       })
-  //       .then(_ => NextResponse.next());
-  //   } else {
-  //     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
-  //   }
-  // }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/auth'],
+  matcher: ['/auth/:path*', '/dashboard/:path*'],
 };

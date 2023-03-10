@@ -3,33 +3,40 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, FormikErrors, FormikValues } from 'formik';
-import supabase from '@/lib/subpabaseClient-client';
-import CustomInput from './CustomInput';
-import SubmitButton from './SubmitButton';
+import supabase from '@/util/subpabaseClient-browser';
+import CustomInput from '../(components)/CustomInput';
+import SubmitButton from '../(components)/SubmitButton';
 import Spinner from '../../../components/ui/Spinner';
 
 const SigninForm = () => {
-  const [formError, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
+  const [formError, setError] = useState<string>('');
 
-  const signInUser = async (values: FormikValues) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
+  const signInHandler = async (values: FormikValues) => {
+    try {
+      setIsPending(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
-      setError(error.message);
-    } else {
-      alert("You're in");
+      if (error) {
+        setError(error.message);
+        throw new Error();
+      }
+    } catch {
+      console.log('Something went wrong with signing in to supabase');
+    } finally {
+      setIsPending(false);
     }
   };
 
-  const submitHandler = (values: FormikValues, { setSubmitting }: any) => {
-    setIsLoading(true);
-    signInUser(values);
-    setIsLoading(false);
+  const submitHandler = async (
+    values: FormikValues,
+    { setSubmitting }: any
+  ) => {
+    await signInHandler(values);
     setSubmitting(false);
   };
 
@@ -38,7 +45,9 @@ const SigninForm = () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         validate={values => {
-          const errors: FormikErrors<FormikValues> = {};
+          const errors: FormikErrors<FormikValues> & { formError?: string } =
+            {};
+
           if (!values.email) {
             errors.email = 'Please enter your email';
           }
@@ -46,8 +55,9 @@ const SigninForm = () => {
             errors.password = 'Please enter your password';
           }
           if (values.password && values.email && formError) {
-            errors.email = formError;
-            errors.password = formError;
+            errors.email = undefined;
+            errors.password = undefined;
+            errors.formError = formError;
           }
 
           return errors;
@@ -69,7 +79,7 @@ const SigninForm = () => {
               placeholder="Enter your Password"
             />
 
-            {isLoading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <SubmitButton btnText="Sign in" isSubmitting={isSubmitting} />

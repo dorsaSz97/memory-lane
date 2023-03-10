@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import SupabaseContextProvider from '@/store/app-context';
+import SupabaseProvider from '@/components/supabase-provider';
 import './global.css';
-import createClient from '@/lib/subpabaseClient-server';
+import createClient from '@/util/subpabaseClient-server';
 
+// dont want it to be cached and therefore not perform the session getting function
 export const revalidate = 0;
 
 const gaiaDisplay = localFont({
@@ -34,18 +35,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const supabase = createClient();
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const accessToken = session?.access_token || null;
+  const serverAccessToken = session?.access_token ?? null;
 
   return (
     <html
       lang="en"
       className={`${gaiaDisplay.variable} font-gaiaDisplay h-full w-full`}
     >
-      <SupabaseContextProvider accessToken={accessToken}>
+      <SupabaseProvider serverAccessToken={serverAccessToken}>
         <body className="relative flex flex-col items-center w-full h-full bg-primary bg-opacity-50 text-dark">
           <main className="w-full flex-1">{children}</main>
 
@@ -56,7 +58,7 @@ export default async function RootLayout({
             </p>
           </footer>
         </body>
-      </SupabaseContextProvider>
+      </SupabaseProvider>
     </html>
   );
 }

@@ -1,8 +1,9 @@
 import React from 'react';
+import classes from './Spinner.module.css';
 
 const Spinner = () => {
   return (
-    <div className="lds-default self-center">
+    <div className={`${classes.lds} self-center`}>
       <div></div>
       <div></div>
       <div></div>

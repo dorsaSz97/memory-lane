@@ -1,36 +1,40 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getFolder, getImages, IFolder } from '@/lib/supabaseFuncs';
+import { User } from '@supabase/supabase-js';
+import supabase from '@/util/subpabaseClient-browser';
+import { FolderType, ImageType } from '@/types';
 import FileUploader from './FileUploader';
 import ImageGallery from './ImageGallery';
-import { useSupabaseContext } from '@/store/app-context';
-import supabase from '@/lib/subpabaseClient-client';
 
-const FolderDetails = ({ folderName }: { folderName: string }) => {
-  const [state] = useSupabaseContext();
-  const [folder, setFolder] = useState<null | IFolder>(null);
+const FolderDetails = ({
+  selectedFolder,
+  user,
+}: {
+  user: User;
+  selectedFolder: FolderType | null;
+}) => {
+  const [folder, setFolder] = useState<FolderType | null>(selectedFolder);
   const [showFileUploader, setShowFileUploader] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[] | null>(null);
-
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  console.log(showFileUploader);
   console.log(folder);
-  const loadImages = async (folder: IFolder) => {
-    const data = await getImages(state.user!, folder);
 
-    if (data) {
-      setImageUrls(data.map(img => img));
-    }
-  };
+  useEffect(() => {
+    setFolder(selectedFolder);
+  }, [selectedFolder]);
 
   useEffect(() => {
     (async () => {
-      if (!state.user) return;
-      const selectedFolder = await getFolder(state.user, folderName);
-      if (!selectedFolder) return;
-      setFolder(selectedFolder);
-      await loadImages(selectedFolder);
+      const { data: images } = await supabase
+        .from('images')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('folder_id', folder?.id);
+
+      setImageUrls(images ? images.map(img => img.url) : []);
     })();
-  }, [folderName]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -40,9 +44,7 @@ const FolderDetails = ({ folderName }: { folderName: string }) => {
         { event: '*', schema: 'public', table: 'images' },
         payload => {
           if (payload.eventType === 'INSERT') {
-            setImageUrls(prev =>
-              prev ? [...prev, payload.new.url] : [payload.new.url]
-            );
+            setImageUrls(prev => [...prev, (payload.new as ImageType).url]);
           }
         }
       )
@@ -63,7 +65,13 @@ const FolderDetails = ({ folderName }: { folderName: string }) => {
         >
           +
         </button>
-        {showFileUploader && folder && <FileUploader currentFolder={folder} />}
+        {showFileUploader && folder && (
+          <FileUploader
+            user={user}
+            currentFolder={folder}
+            setShowFileUploader={setShowFileUploader}
+          />
+        )}
       </div>
     </div>
   );

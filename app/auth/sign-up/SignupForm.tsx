@@ -2,14 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import supabase from '@/lib/subpabaseClient-client';
-import { useSupabaseContext } from '@/store/app-context';
-import { setUserName } from '@/store/actionCreators';
 import { Formik, Form, FormikValues } from 'formik';
 import * as yup from 'yup';
-import CustomInput from './CustomInput';
-import SubmitButton from './SubmitButton';
-import Spinner from '../../../components/ui/Spinner';
+import supabase from '@/util/subpabaseClient-browser';
+import CustomInput from '../(components)/CustomInput';
+import SubmitButton from '../(components)/SubmitButton';
+import Spinner from '@/components/ui/Spinner';
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
 const validationSchema = yup.object().shape({
@@ -21,25 +19,31 @@ const validationSchema = yup.object().shape({
       message: 'Your password has to include a capial letter and a number.',
     })
     .required('Password is required'),
-  username: yup.string().default('stranger'),
 });
 
 const SignupForm = () => {
-  const [, dispatch] = useSupabaseContext();
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
+  const [formError, setError] = useState<string>('');
 
-  const signUpUser = async (values: FormikValues) => {
-    const { error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-    });
+  const signUpHandler = async (values: FormikValues) => {
+    try {
+      setIsPending(true);
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
-      alert('Something wrong with signing up the user' + error.message);
-      router.refresh();
-    } else {
-      dispatch(setUserName(values.username));
+      if (error) {
+        setError(error.message);
+        throw new Error(error.message);
+      } else {
+        router.replace('/auth/sign-in');
+      }
+    } catch (error) {
+      console.log('Something wrong with signing up to supabase' + error);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -47,16 +51,14 @@ const SignupForm = () => {
     values: FormikValues,
     { setSubmitting }: any
   ) => {
-    setIsLoading(true);
-    await signUpUser(values);
-    setIsLoading(false);
+    await signUpHandler(values);
     setSubmitting(false);
   };
 
   return (
     <>
       <Formik
-        initialValues={{ email: '', password: '', username: '' }}
+        initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
@@ -74,13 +76,7 @@ const SignupForm = () => {
               type="password"
               placeholder="Enter your password"
             />
-            <CustomInput
-              label="Name"
-              name="username"
-              type="text"
-              placeholder="Enter your name"
-            />
-            {isLoading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <SubmitButton btnText="Sign up" isSubmitting={isSubmitting} />

@@ -1,29 +1,13 @@
 'use client';
 
-import { useEffect, useState, Suspense, useRef } from 'react';
-import { User } from '@supabase/supabase-js';
-import supabase from '@/lib/subpabaseClient-client';
-import { getFolders } from '@/lib/supabaseFuncs';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import supabase from '@/util/subpabaseClient-browser';
+import { FolderType } from '@/types';
 
-const FoldersSection = ({
-  user,
-  userFolders,
-}: {
-  user: User;
-  userFolders: { name: string }[] | null;
-}) => {
-  const [folders, setFolders] = useState<string[] | null>(
-    userFolders?.map(folder => folder.name) || null
-  );
-  const ref = useRef<HTMLUListElement | null>(null);
-
-  useEffect(() => {
-    ref.current?.scrollTo({
-      left: ref.current!.scrollWidth + 1000,
-      behavior: 'smooth',
-    });
-  }, [folders]);
+const FoldersSection = ({ userFolders }: { userFolders: string[] }) => {
+  const [folders, setFolders] = useState<string[]>(userFolders);
+  const folderListRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
     const channel = supabase
@@ -32,33 +16,30 @@ const FoldersSection = ({
         'postgres_changes',
         { event: '*', schema: 'public', table: 'folders' },
         payload => {
-          if (payload.eventType === 'INSERT') {
-            const newFolder = payload.new;
-
-            setFolders(prev =>
-              prev ? [...prev, newFolder.name] : [newFolder.name]
-            );
-          }
+          if (payload.eventType === 'INSERT')
+            setFolders(prev => [...prev, (payload.new as FolderType).name]);
         }
       )
       .subscribe();
 
+    folderListRef.current?.scrollTo({
+      left: folderListRef.current!.scrollWidth + 1000,
+      behavior: 'smooth',
+    });
+
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [folders]);
 
   return (
     <>
-      {!folders && <p>Loading....</p>}
-      {folders && folders.length === 0 && (
-        <p>No folder added yet. Maybe add one?</p>
-      )}
-      {folders && folders.length > 0 && (
+      {folders.length === 0 && <p>No folder added yet. Maybe add one?</p>}
+      {folders.length > 0 && (
         <div className="overflow-hidden w-full p-4 h-fit">
           <ul
             className="flex gap-10 overflow-x-scroll h-full text-dark scrollbar"
-            ref={ref}
+            ref={folderListRef}
           >
             {folders.map(folder => (
               <li

@@ -1,18 +1,23 @@
 'use client';
 
 import React, { ChangeEvent, useRef } from 'react';
-import { useSupabaseContext } from '@/store/app-context';
-import { IFolder } from '@/lib/supabaseFuncs';
-import { uploadImage } from '@/lib/supabaseFuncs';
+import { User } from '@supabase/supabase-js';
+import supabase from '@/util/subpabaseClient-browser';
+import { FolderType } from '@/types';
 
-const FileUploader = ({ currentFolder }: { currentFolder: IFolder }) => {
-  const [state] = useSupabaseContext();
+const FileUploader = ({
+  currentFolder,
+  user,
+  setShowFileUploader,
+}: {
+  user: User;
+  currentFolder: FolderType;
+  setShowFileUploader: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  const currentUser = state.user!;
-
-  const uploadImageHandler = async (e: ChangeEvent<HTMLInputElement>) => {
-    const uploadedImagesList = e.target.files;
+  const uploadImageHandler = async () => {
+    const uploadedImagesList = fileRef.current!.files;
     let uploadedImage: File | null;
 
     if (uploadedImagesList && uploadedImagesList) {
@@ -21,33 +26,36 @@ const FileUploader = ({ currentFolder }: { currentFolder: IFolder }) => {
       uploadedImage = null;
     }
 
-    try {
-      if (uploadedImage) {
-        // HEIC format isnt supported by supabase
-        if (uploadedImage.type.split('/')[1].toLowerCase() === 'heic')
-          throw new Error('Wrong file type');
+    if (uploadedImage) {
+      // HEIC format isnt supported by supabase
+      if (uploadedImage.type.split('/')[1].toLowerCase() === 'heic') {
+        alert('Wrong file type');
+      } else {
+        // uploading the image to the bucket
+        await supabase.storage
+          .from('memories')
+          .upload(uploadedImage.name, uploadedImage);
 
-        await uploadImage(currentUser, uploadedImage, currentFolder!);
+        const imageUrl = supabase.storage
+          .from('memories')
+          .getPublicUrl(uploadedImage.name).data.publicUrl;
+
+        // inserting a new image row
+        await supabase.from('images').insert({
+          user_id: user.id,
+          url: imageUrl,
+          folder_id: currentFolder.id,
+        });
       }
-    } catch (error) {
-      alert(error);
+      setShowFileUploader(false);
+      fileRef.current!.files = null;
     }
   };
 
   return (
-    // position: absolute;
-    // top: -100%;
-    // flex-direction: column;
-    // display: flex;
-    // right: 50%;
-    // gap: 2rem;
-    // width: fit-content;
-    // transform: translateX(50%);
-    // align-items: center;
-
-    <form className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[110%] top-0 p-3 rounded-[5px] shadow-2xl">
+    <form className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[-110%] p-3 rounded-[5px] shadow-2xl z-[90000]">
       <label htmlFor="memory-image" className="text-[2rem]">
-        Your memory:{' '}
+        Your memory:
       </label>
       <input
         type="file"

@@ -1,19 +1,25 @@
 'use client';
-import { useState, useRef,FormEvent } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { User } from '@supabase/supabase-js';
-import { uploadFolder } from '@/lib/supabaseFuncs';
+import supabase from '@/util/subpabaseClient-browser';
 
 const FolderUploader = ({ user }: { user: User }) => {
   const [showInput, setShowInput] = useState(false);
-  const folderRef = useRef<HTMLInputElement | null>(null);
+  const [inputValue, setInputValue] = useState('');
 
-  const addFolderHandler = async (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const addFolderHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await uploadFolder(user, folderRef.current!.value);
+      const { error } = await supabase
+        .from('folders')
+        .insert([{ name: inputValue, user_id: user.id }]);
+
+      if (error) throw new Error(error.message);
+    } catch (err) {
+      console.log('Something went wrong with uploading the folder' + err);
+    } finally {
+      setInputValue('');
       setShowInput(false);
-    } catch (error) {
-      console.log('Something went wrong with uploading the folder' + error);
     }
   };
 
@@ -29,7 +35,10 @@ const FolderUploader = ({ user }: { user: User }) => {
             name="folder-name"
             id="folder-name"
             placeholder="Enter a name..."
-            ref={folderRef}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setInputValue(e.target.value)
+            }
+            value={inputValue}
             className="rounded-[5px] p-[0.4rem]"
           />
 

@@ -1,10 +1,10 @@
 // URL => /dashboard/:folderName
 import type { Metadata } from 'next';
 import Link from 'next/link';
-
 import Heading from '@/components/ui/Heading';
 import FolderDetails from './FolderDetails';
-import { supabase } from '@/lib/subpabaseClient';
+import createClient from '@/util/subpabaseClient-server';
+import { redirect } from 'next/navigation';
 
 type PageProps = {
   params: {
@@ -13,13 +13,35 @@ type PageProps = {
 };
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  const folderName = props.params.folderName;
+  let folderName = props.params.folderName;
+  if (folderName.includes('-')) {
+    folderName = folderName.split('-').join(' ');
+  }
   const title = folderName[0].toUpperCase() + folderName.slice(1);
   return { title };
 }
 
-const FolderDetailPage = (props: PageProps) => {
-  const folderName = props.params.folderName;
+const FolderDetailPage = async (props: PageProps) => {
+  const supabase = createClient();
+
+  let folderName = props.params.folderName;
+  if (folderName.includes('-')) {
+    folderName = folderName.split('-').join(' ');
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/auth');
+  }
+
+  const { data: selectedFolder } = await supabase
+    .from('folders')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('name', folderName);
 
   return (
     <div className="flex flex-col h-full w-full p-10">
@@ -36,7 +58,10 @@ const FolderDetailPage = (props: PageProps) => {
       />
 
       {/* images */}
-      <FolderDetails folderName={folderName} />
+      <FolderDetails
+        user={user}
+        selectedFolder={selectedFolder ? selectedFolder[0] : null}
+      />
     </div>
   );
 };

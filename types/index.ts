@@ -1,13 +1,8 @@
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies';
+import { Dispatch, SetStateAction } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { Database } from './supabase';
 
-export interface IToken {
-  name: string;
-  value: string;
-}
-export interface MyCookies extends RequestCookies {
-  'my-refresh-token': IToken;
-  'my-access-token': IToken;
-}
+// Form
 export interface ISigninForm {
   email: string;
   password: string;
@@ -23,5 +18,15 @@ export interface IFormError {
   password?: string;
 }
 
-// Props Type
-export type FolderDetailProps = {};
+// Store
+export interface ISupabaseState {
+  user: User | null;
+  session: Session | null;
+  isPending: boolean;
+  setUser: Dispatch<SetStateAction<User | null>>;
+  setSession: Dispatch<SetStateAction<Session | null>>;
+  setIsPending: Dispatch<SetStateAction<boolean>>;
+}
+
+export type FolderType = Database['public']['Tables']['folders']['Row'];
+export type ImageType = Database['public']['Tables']['images']['Row'];

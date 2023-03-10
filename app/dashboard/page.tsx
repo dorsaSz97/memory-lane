@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import createClient from '@/lib/subpabaseClient-server';
+import createClient from '@/util/subpabaseClient-server';
 
 import SignoutButton from './SignoutButton';
 import FolderForm from './FolderForm';
@@ -12,10 +12,12 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const supabase = createClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // it will 100% exist because of the middleware
   if (!user) {
     redirect('/auth');
   }
@@ -25,15 +27,12 @@ export default async function DashboardPage() {
     .select('name')
     .eq('user_id', user.id);
 
-  console.log('we are in the dashboard and the user is: ');
-  console.log(user);
-  console.log('with the folders: ');
-  console.log(userFolders);
-
   return (
     <div className="flex flex-col h-full w-full p-10">
       <div className="my-auto self-center text-[7rem] w-full">
-        <FoldersSection user={user} userFolders={userFolders}/>
+        <FoldersSection
+          userFolders={userFolders?.map(uFolder => uFolder.name) || []}
+        />
       </div>
       <FolderForm user={user} />
       <SignoutButton />
