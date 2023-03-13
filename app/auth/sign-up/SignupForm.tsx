@@ -63,7 +63,7 @@ const SignupForm = () => {
         onSubmit={submitHandler}
       >
         {({ isSubmitting }) => (
-          <Form className="flex flex-col gap-6">
+          <Form className="flex flex-col gap-6 w-[70%]">
             <CustomInput
               label="Email"
               name="email"
