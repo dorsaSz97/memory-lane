@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
-import cameraImage from '@/public/camera.png';
+import cameraImage from '@/public/camera.webp';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex justify-center items-center my-auto h-full">
-      <section className="flex rounded-lg shadow-2xl overflow-hidden">
+    <div className="flex w-[70%] m-auto items-center my-auto h-full">
+      <section className="flex rounded-lg shadow-2xl overflow-hidden w-full">
         <div className="grow-0 shrink-0 flex flex-col items-center justify-center w-1/2 gap-8 py-20 px-10 bg-primary">
           <Image src={cameraImage} alt="camera" width={150} height={150} />
           <p className="text-lg text-center">
