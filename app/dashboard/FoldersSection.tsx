@@ -38,7 +38,7 @@ const FoldersSection = ({ userFolders }: { userFolders: string[] }) => {
       {folders.length > 0 && (
         <div className="overflow-hidden w-full p-4 h-fit">
           <ul
-            className="flex gap-10 overflow-x-scroll h-full text-dark scrollbar"
+            className="flex gap-10 overflow-x-scroll h-full text-dark scrollbar  overflow-y-visible"
             ref={folderListRef}
           >
             {folders.map(folder => (
