@@ -36,6 +36,7 @@ const ImageGallery = ({ imageUrls }: { imageUrls: string[] }) => {
             )}
           </AnimatePresence>
           <motion.img
+            onLoad={() => setIsLoading(false)}
             layout={true}
             src={imageUrl}
             alt={'A memory'}
@@ -43,7 +44,7 @@ const ImageGallery = ({ imageUrls }: { imageUrls: string[] }) => {
               setIsImageZoomed(!isImageZoomed);
               setSelectedImage(imageUrl);
             }}
-            className={`object-cover ${
+            className={`object-cover ${classes} ${
               selectedImage === imageUrl ? ' z-[100000] ' : '  z-[1000] '
             }  ${
               isImageZoomed && selectedImage === imageUrl
