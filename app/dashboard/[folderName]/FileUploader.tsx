@@ -4,6 +4,7 @@ import React, { ChangeEvent, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import supabase from '@/util/subpabaseClient-browser';
 import { FolderType } from '@/types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FileUploader = ({
   currentFolder,
@@ -53,18 +54,25 @@ const FileUploader = ({
   };
 
   return (
-    <form className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[-110%] p-3 rounded-[5px] shadow-2xl z-[90000]">
-      <label htmlFor="memory-image" className="text-[2rem]">
-        Your memory:
-      </label>
-      <input
-        type="file"
-        name="memory-image"
-        id="memory-image"
-        ref={fileRef}
-        onChange={uploadImageHandler}
-      />
-    </form>
+    <AnimatePresence>
+      <motion.form
+        className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[-110%] p-3 rounded-[5px] shadow-2xl z-[90000]"
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        exit={{ opacity: 0 }}
+      >
+        <label htmlFor="memory-image" className="text-[2rem]">
+          Your memory:
+        </label>
+        <input
+          type="file"
+          name="memory-image"
+          id="memory-image"
+          ref={fileRef}
+          onChange={uploadImageHandler}
+        />
+      </motion.form>
+    </AnimatePresence>
   );
 };
 

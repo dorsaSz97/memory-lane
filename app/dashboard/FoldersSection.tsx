@@ -36,9 +36,9 @@ const FoldersSection = ({ userFolders }: { userFolders: string[] }) => {
     <>
       {folders.length === 0 && <p>No folder added yet. Maybe add one?</p>}
       {folders.length > 0 && (
-        <div className="overflow-hidden w-full p-4 h-fit">
+        <div className="overflow-x-scroll overflow-y-visible w-full p-4 h-fit scrollbar ">
           <ul
-            className="flex gap-10 overflow-x-scroll h-full text-dark scrollbar  overflow-y-visible"
+            className="flex gap-10 h-full text-dark overflow-visible"
             ref={folderListRef}
           >
             {folders.map(folder => (

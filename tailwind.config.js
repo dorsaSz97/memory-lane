@@ -13,7 +13,7 @@ module.exports = {
         gaiaDisplay: 'var(--font-gaiaDisplay)',
       },
       gridTemplateColumns: {
-        fluid: 'repeat(auto-fit, 300px)',
+        fluid: 'repeat(4, 1fr)',
       },
       colors: {
         primary: '#efeee9',

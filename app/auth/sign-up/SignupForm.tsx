@@ -38,6 +38,7 @@ const SignupForm = () => {
         setError(error.message);
         throw new Error(error.message);
       } else {
+        alert('All set!!!');
         router.replace('/auth/sign-in');
       }
     } catch (error) {

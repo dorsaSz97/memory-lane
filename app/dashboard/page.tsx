@@ -6,6 +6,8 @@ import SignoutButton from './SignoutButton';
 import FolderForm from './FolderForm';
 import FoldersSection from './FoldersSection';
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Dashboard',
 };

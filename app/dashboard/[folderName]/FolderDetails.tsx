@@ -6,6 +6,7 @@ import supabase from '@/util/subpabaseClient-browser';
 import { FolderType, ImageType } from '@/types';
 import FileUploader from './FileUploader';
 import ImageGallery from './ImageGallery';
+import { AnimatePresence } from 'framer-motion';
 
 const FolderDetails = ({
   selectedFolder,
@@ -16,7 +17,7 @@ const FolderDetails = ({
 }) => {
   const [folder, setFolder] = useState<FolderType | null>(selectedFolder);
   const [showFileUploader, setShowFileUploader] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [images, setImages] = useState<ImageType[]>([]);
   console.log(showFileUploader);
   console.log(folder);
 
@@ -32,7 +33,7 @@ const FolderDetails = ({
         .eq('user_id', user.id)
         .eq('folder_id', folder?.id);
 
-      setImageUrls(images ? images.map(img => img.url) : []);
+      setImages(images || []);
     })();
   }, []);
 
@@ -44,7 +45,7 @@ const FolderDetails = ({
         { event: '*', schema: 'public', table: 'images' },
         payload => {
           if (payload.eventType === 'INSERT') {
-            setImageUrls(prev => [...prev, (payload.new as ImageType).url]);
+            setImages(prev => [...prev, payload.new as ImageType]);
           }
         }
       )
@@ -53,11 +54,11 @@ const FolderDetails = ({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [imageUrls]);
+  }, [images]);
 
   return (
     <div className="mt-auto w-full flex- flex-col gap-10">
-      {imageUrls && <ImageGallery imageUrls={imageUrls} />}
+      {images && <ImageGallery images={images} />}
       <div className="relative flex justify-center">
         <button
           className="text-[7rem]"
@@ -65,6 +66,7 @@ const FolderDetails = ({
         >
           +
         </button>
+
         {showFileUploader && folder && (
           <FileUploader
             user={user}
