@@ -1,7 +1,5 @@
 "use client";
 import { SupaImage } from "@/types";
-import supabase from "@/util/subpabaseClient-browser";
-
 import Image from "next/image";
 import { useState, DragEvent, useEffect } from "react";
 import RealtimeProvider from "./RealtimeProvider";
@@ -9,7 +7,6 @@ import RealtimeProvider from "./RealtimeProvider";
 const ImageSlider = ({ images }: { images: SupaImage[] }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userImages, setUserImages] = useState([...images]);
-  console.log(userImages);
 
   const dragHandler = (e: DragEvent<HTMLDivElement>, imgId: string) => {
     e.dataTransfer.setData("text/plain", imgId);
@@ -18,13 +15,14 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
   useEffect(() => {
     setUserImages(images);
   }, [images]);
+
   const classes = isLoading
     ? "scale-110 blur-2xl grayscale"
     : "scale-100 blur-0 grayscale-0";
 
   return (
     <RealtimeProvider setServerImages={setUserImages}>
-      <ul className="flex gap-5 items-center overflow-visible h-[300px] min-w-fit">
+      <ul className="flex gap-5 items-center overflow-visible h-[300px] min-w-fit image-container">
         {userImages.map((image, i) => {
           return (
             <div

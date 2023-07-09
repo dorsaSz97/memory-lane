@@ -24,10 +24,13 @@ const FoldersList = ({
         (payload) => {
           if (payload.eventType === "INSERT") {
             setFolders((prev) => [...prev, payload.new as FolderType]);
-            foldersRef.current!.scrollTo({
-              top: foldersRef.current!.scrollHeight * folders.length,
-              behavior: "smooth",
-            });
+          }
+          if (payload.eventType === "DELETE") {
+            setFolders((prev) =>
+              prev.filter(
+                (folder) => folder.id !== (payload.old as FolderType).id
+              )
+            );
           }
         }
       )
@@ -36,6 +39,13 @@ const FoldersList = ({
     return () => {
       supabase.removeChannel(channel);
     };
+  }, [supabase]);
+
+  useEffect(() => {
+    foldersRef.current!.scrollTo({
+      top: foldersRef.current!.scrollHeight * folders.length,
+      behavior: "smooth",
+    });
   }, [folders]);
 
   return (

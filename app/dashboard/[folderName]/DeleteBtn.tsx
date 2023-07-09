@@ -12,14 +12,23 @@ const DeleteBtn = ({
   selectedFolder: FolderType;
   user: User;
 }) => {
+  const router = useRouter();
   const deleteFolder = async () => {
     // loading
+
+    const { error: imgError } = await supabase
+      .from("images")
+      .delete()
+      .eq("folder_id", selectedFolder.id)
+      .eq("user_id", user.id);
 
     const { error } = await supabase
       .from("folders")
       .delete()
       .eq("id", selectedFolder.id)
       .eq("user_id", user.id);
+
+    router.push("/dashboard");
   };
 
   return <button onClick={() => deleteFolder()}>Delete</button>;

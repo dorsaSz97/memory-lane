@@ -1,10 +1,11 @@
 "use client";
 
-import React, { ChangeEvent, useRef, FormEvent } from "react";
+import React, { ChangeEvent, useRef, FormEvent, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import supabase from "@/util/subpabaseClient-browser";
 import { FolderType } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "../loading";
 
 const FileUploader = ({
   currentFolder,
@@ -14,8 +15,10 @@ const FileUploader = ({
   setShowFileUploader: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const uploadImageHandler = async () => {
+    setIsLoading(true);
     const uploadedImagesList = fileRef.current!.files;
     let uploadedImage: File | null;
 
@@ -46,6 +49,7 @@ const FileUploader = ({
           folder_id: currentFolder.id,
         });
       }
+      setIsLoading(false);
       setShowFileUploader(false);
       fileRef.current!.files = null;
     }
@@ -60,16 +64,23 @@ const FileUploader = ({
         exit={{ opacity: 0 }}
         onSubmit={(e: FormEvent<HTMLFormElement>) => e.preventDefault()}
       >
-        <label htmlFor="memory-image" className="text-[2rem]">
-          Your memory:
-        </label>
-        <input
-          type="file"
-          name="memory-image"
-          id="memory-image"
-          ref={fileRef}
-        />
-        <button onClick={uploadImageHandler}>Upload</button>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {" "}
+            <label htmlFor="memory-image" className="text-[2rem]">
+              Your memory:
+            </label>
+            <input
+              type="file"
+              name="memory-image"
+              id="memory-image"
+              ref={fileRef}
+            />
+            <button onClick={uploadImageHandler}>Upload</button>
+          </>
+        )}
       </motion.form>
     </AnimatePresence>
   );
