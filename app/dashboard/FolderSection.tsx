@@ -65,7 +65,9 @@ const FolderSection = ({
       </ul>
 
       <Link
-        href={`/dashboard/${folder.name.split(" ").join("-")}`}
+        href={`/dashboard/${
+          folder.id.toString() + "+" + folder.name.split(" ").join("-")
+        }`}
         onMouseEnter={() => setIsColored(true)}
         onMouseLeave={() => setIsColored(false)}
         className="flex-[2] self-center text-center text-[8rem]"

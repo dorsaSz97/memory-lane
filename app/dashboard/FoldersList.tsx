@@ -22,16 +22,16 @@ const FoldersList = ({
         "postgres_changes",
         { event: "*", schema: "public", table: "folders" },
         (payload) => {
-          if (payload.eventType === "INSERT")
+          if (payload.eventType === "INSERT") {
             setFolders((prev) => [...prev, payload.new as FolderType]);
+            foldersRef.current!.scrollTo({
+              top: foldersRef.current!.scrollHeight * folders.length,
+              behavior: "smooth",
+            });
+          }
         }
       )
       .subscribe();
-
-    foldersRef.current!.scrollTo({
-      top: foldersRef.current!.scrollHeight * folders.length,
-      behavior: "smooth",
-    });
 
     return () => {
       supabase.removeChannel(channel);

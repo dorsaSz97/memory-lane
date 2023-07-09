@@ -12,7 +12,6 @@ const DeleteBtn = ({
   selectedFolder: FolderType;
   user: User;
 }) => {
-  const router = useRouter();
   const deleteFolder = async () => {
     // loading
 
