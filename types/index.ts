@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { Database } from './supabase';
+import { Dispatch, SetStateAction } from "react";
+import { Session, User } from "@supabase/supabase-js";
+import { Database } from "./supabase";
 
 // Form
 export interface ISigninForm {
@@ -28,5 +28,5 @@ export interface ISupabaseState {
   setIsPending: Dispatch<SetStateAction<boolean>>;
 }
 
-export type FolderType = Database['public']['Tables']['folders']['Row'];
-export type ImageType = Database['public']['Tables']['images']['Row'];
+export type FolderType = Database["public"]["Tables"]["folders"]["Row"];
+export type SupaImage = Database["public"]["Tables"]["images"]["Row"];

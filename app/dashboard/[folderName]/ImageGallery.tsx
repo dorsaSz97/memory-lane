@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ImageType } from "@/types";
+import { SupaImage } from "@/types";
 
 const ExoticImage = forwardRef<HTMLImageElement, ImageProps>(
   function ExoticImageWrapper(props, ref) {
@@ -32,7 +32,7 @@ const ExoticImage = forwardRef<HTMLImageElement, ImageProps>(
 
 const MotionComponent = motion(ExoticImage, { forwardMotionProps: true });
 
-const ImageGallery = ({ images }: { images: ImageType[] }) => {
+const ImageGallery = ({ images }: { images: SupaImage[] }) => {
   // const imageUrls = useMemo(() => {
   //   return images.map(image => image.url);
   // }, [images]);
@@ -41,12 +41,12 @@ const ImageGallery = ({ images }: { images: ImageType[] }) => {
   const [selectedImage, setSelectedImage] = useState<number>();
 
   return (
-    <ul className="grid grid-cols-fluid gap-2 flex-1 justify-center">
+    <ul className="flex gap-3 items-center justify-center">
       {images.map((image) => (
         <motion.div
           layout={true}
           key={image.id}
-          className={`w-full relative h-[300px] bg-transparent`}
+          className={`w-full relative h-[300px]  bg-[url('/border-solid.png')]`}
         >
           <AnimatePresence>
             {isImageZoomed && (
@@ -83,19 +83,6 @@ const ImageGallery = ({ images }: { images: ImageType[] }) => {
                 : "absolute top-0 left-0 w-[300px]  "
             }  cursor-pointer  `}
           />
-          {/* <motion.img
-            layout={true}
-            src={image.url}
-            alt={'A memory'}
-            onClick={() => {
-              setIsImageZoomed(!isImageZoomed);
-              setSelectedImage(image.id);
-            }}
-            onAnimationEnd={() => console.log('end')}
-            //  group-hover:opacity-75 object-cover aspect-[1]+ classes
-
-            // onLoadingComplete={() => setIsLoading(false)}
-          /> */}
         </motion.div>
       ))}
     </ul>

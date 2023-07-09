@@ -1,10 +1,14 @@
 // URL => /dashboard/:folderName
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import Heading from '@/components/ui/Heading';
-import FolderDetails from './FolderDetails';
-import createClient from '@/util/subpabaseClient-server';
-import { redirect } from 'next/navigation';
+import type { Metadata } from "next";
+import Link from "next/link";
+import Heading from "@/components/ui/Heading";
+import FolderDetails from "./FolderDetails";
+import createClient from "@/util/subpabaseClient-server";
+import { redirect } from "next/navigation";
+import AddBtn from "./AddBtn";
+import FileUploader from "./FileUploader";
+import InfoBtn from "./InfoBtn";
+import DeleteBtn from "./DeleteBtn";
 
 type PageProps = {
   params: {
@@ -14,8 +18,8 @@ type PageProps = {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   let folderName = props.params.folderName;
-  if (folderName.includes('-')) {
-    folderName = folderName.split('-').join(' ');
+  if (folderName.includes("-")) {
+    folderName = folderName.split("-").join(" ");
   }
   const title = folderName[0].toUpperCase() + folderName.slice(1);
   return { title };
@@ -25,8 +29,8 @@ const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
 
   let folderName = props.params.folderName;
-  if (folderName.includes('-')) {
-    folderName = folderName.split('-').join(' ');
+  if (folderName.includes("-")) {
+    folderName = folderName.split("-").join(" ");
   }
 
   const {
@@ -34,35 +38,49 @@ const FolderDetailPage = async (props: PageProps) => {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/auth');
+    redirect("/auth");
   }
 
   const { data: selectedFolder } = await supabase
-    .from('folders')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('name', folderName);
+    .from("folders")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("name", folderName);
+
+  if (!selectedFolder) {
+    redirect("/auth");
+  }
 
   return (
-    <div className="flex flex-col h-full w-full p-10">
-      {/* back button */}
-      <Link href="/dashboard" className="text-lg text-underline">
-        Visit all folders
-      </Link>
+    <main className="w-full h-full p-4 relative" data-scroll-section>
+      <AddBtn selectedFolder={selectedFolder[0]} />
 
-      {/* folder name */}
-      <Heading
-        Element={'h1'}
-        title={folderName}
-        className="my-[2rem] text-[10rem] self-center"
-      />
+      <div className="flex flex-col h-full w-full justify-between">
+        <div className="flex justify-between items-center">
+          <Link href="/dashboard" className="text-lg text-underline">
+            Visit all folders
+          </Link>
+          <DeleteBtn selectedFolder={selectedFolder[0]} user={user} />
+          <InfoBtn selectedFolder={selectedFolder[0]} />
+        </div>
+        {/* back button */}
 
-      {/* images */}
-      <FolderDetails
-        user={user}
-        selectedFolder={selectedFolder ? selectedFolder[0] : null}
-      />
-    </div>
+        <div>
+          {/* folder name */}
+          <Heading
+            Element={"h1"}
+            title={folderName}
+            className="mb-[4rem] text-[8rem] self-center text-center"
+          />
+
+          {/* images */}
+          <FolderDetails
+            user={user}
+            selectedFolder={selectedFolder ? selectedFolder[0] : null}
+          />
+        </div>
+      </div>
+    </main>
   );
 };
 

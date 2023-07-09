@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
-import supabase from '@/util/subpabaseClient-browser';
-import { FolderType, ImageType } from '@/types';
-import FileUploader from './FileUploader';
-import ImageGallery from './ImageGallery';
-import { AnimatePresence } from 'framer-motion';
-
+import React, { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
+import supabase from "@/util/subpabaseClient-browser";
+import { FolderType, SupaImage } from "@/types";
+import FileUploader from "./FileUploader";
+import ImageGallery from "./ImageGallery";
+import { AnimatePresence } from "framer-motion";
+import ImageSlider from "./ImageSlider";
+import { useRef } from "react";
 const FolderDetails = ({
   selectedFolder,
   user,
@@ -17,9 +18,7 @@ const FolderDetails = ({
 }) => {
   const [folder, setFolder] = useState<FolderType | null>(selectedFolder);
   const [showFileUploader, setShowFileUploader] = useState(false);
-  const [images, setImages] = useState<ImageType[]>([]);
-  console.log(showFileUploader);
-  console.log(folder);
+  const [images, setImages] = useState<SupaImage[]>([]);
 
   useEffect(() => {
     setFolder(selectedFolder);
@@ -28,10 +27,10 @@ const FolderDetails = ({
   useEffect(() => {
     (async () => {
       const { data: images } = await supabase
-        .from('images')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('folder_id', folder?.id);
+        .from("images")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("folder_id", folder?.id);
 
       setImages(images || []);
     })();
@@ -39,13 +38,13 @@ const FolderDetails = ({
 
   useEffect(() => {
     const channel = supabase
-      .channel('custom-all-channel')
+      .channel("custom-all-channel")
       .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'images' },
-        payload => {
-          if (payload.eventType === 'INSERT') {
-            setImages(prev => [...prev, payload.new as ImageType]);
+        "postgres_changes",
+        { event: "*", schema: "public", table: "images" },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            setImages((prev) => [...prev, payload.new as SupaImage]);
           }
         }
       )
@@ -57,24 +56,8 @@ const FolderDetails = ({
   }, [images]);
 
   return (
-    <div className="mt-auto w-full flex- flex-col gap-10">
-      {images && <ImageGallery images={images} />}
-      <div className="relative flex justify-center">
-        <button
-          className="text-[7rem]"
-          onClick={() => setShowFileUploader(!showFileUploader)}
-        >
-          +
-        </button>
-
-        {showFileUploader && folder && (
-          <FileUploader
-            user={user}
-            currentFolder={folder}
-            setShowFileUploader={setShowFileUploader}
-          />
-        )}
-      </div>
+    <div className="mt-auto overflow-x-scroll  scrollbar-hidden">
+      {images && <ImageSlider images={images} />}
     </div>
   );
 };
