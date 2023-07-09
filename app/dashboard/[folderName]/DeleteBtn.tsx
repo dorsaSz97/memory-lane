@@ -31,7 +31,7 @@ const DeleteBtn = ({
     router.push("/dashboard");
   };
 
-  return <button onClick={() => deleteFolder()}>Delete</button>;
+  return <button onClick={() => deleteFolder()}>Delete this folder</button>;
 };
 
 export default DeleteBtn;

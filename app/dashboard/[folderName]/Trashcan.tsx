@@ -2,6 +2,7 @@
 import supabase from "@/util/subpabaseClient-browser";
 import { User } from "@supabase/supabase-js";
 import { DragEvent } from "react";
+import { TfiTrash } from "react-icons/tfi";
 
 const Trashcan = ({ user }: { user: User }) => {
   const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
@@ -19,7 +20,7 @@ const Trashcan = ({ user }: { user: User }) => {
 
   return (
     <div onDragOver={dragOverHandler} onDrop={dropHandler}>
-      Trashcan
+      <TfiTrash size={30} />
     </div>
   );
 };

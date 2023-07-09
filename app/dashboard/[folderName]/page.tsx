@@ -21,20 +21,22 @@ type PageProps = {
   };
 };
 
-// export async function generateMetadata(props: PageProps): Promise<Metadata> {
-//   let urlName = props.params.urlName;
-//   if (urlName.split("+")[1].includes("-")) {
-//     urlName = urlName.split("-").join(" ");
-//   }
-//   const title = folderName[0].toUpperCase() + folderName.slice(1);
-//   return { title };
-// }
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  let urlName = props.params.folderName;
+  let folderId = urlName.split("%2B")[0];
+  let folderName = urlName.split("%2B")[1];
+
+  if (folderName.includes("-")) {
+    folderName = folderName.split("-").join(" ");
+  }
+
+  return { title: folderName };
+}
 
 const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
 
   let urlName = props.params.folderName;
-  console.log(urlName);
   let folderId = urlName.split("%2B")[0];
   let folderName = urlName.split("%2B")[1];
 
@@ -67,24 +69,28 @@ const FolderDetailPage = async (props: PageProps) => {
             Visit all folders
           </Link>
           <DeleteBtn selectedFolder={selectedFolders[0]} user={user!} />
-          <InfoBtn selectedFolder={selectedFolders[0]} />
-          <Trashcan user={user!} />
         </div>
         {/* back button */}
 
-        <div>
+        <div className="flex flex-col gap-16">
           {/* folder name */}
-          <Heading
-            Element={"h1"}
-            title={folderName}
-            className="mb-[4rem] text-[8rem] self-center text-center"
-          />
+          <div className="flex items-center justify-center">
+            <Heading
+              Element={"h1"}
+              title={folderName}
+              className="text-[8rem] text-center"
+            />
+            <InfoBtn selectedFolder={selectedFolders[0]} />
+          </div>
 
           {/* images */}
-          <FolderDetails
-            user={user!}
-            selectedFolder={selectedFolders ? selectedFolders[0] : null}
-          />
+          <div className="flex flex-col gap-6">
+            <Trashcan user={user!} />
+            <FolderDetails
+              user={user!}
+              selectedFolder={selectedFolders ? selectedFolders[0] : null}
+            />
+          </div>
         </div>
       </div>
     </main>
