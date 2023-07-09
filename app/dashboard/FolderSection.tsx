@@ -14,6 +14,7 @@ const FolderSection = ({
   user: User;
 }) => {
   const [images, setImages] = useState<any[]>([]);
+  const [isColored, setIsColored] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -38,9 +39,9 @@ const FolderSection = ({
               key={image?.id ?? i}
               className={`${i === 0 && "self-end"} ${
                 i === 1 && "self-center"
-              } ${
-                i === 2 && "self-start"
-              } flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
+              } ${i === 2 && "self-start"}  ${
+                isColored ? "grayscale-0" : "grayscale"
+              }  transition-all duration-1000 flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
             >
               <Image
                 width={500}
@@ -65,6 +66,8 @@ const FolderSection = ({
 
       <Link
         href={`/dashboard/${folder.name.split(" ").join("-")}`}
+        onMouseEnter={() => setIsColored(true)}
+        onMouseLeave={() => setIsColored(false)}
         className="flex-[2] self-center text-center text-[8rem]"
       >
         {folder.name}
@@ -77,9 +80,9 @@ const FolderSection = ({
               key={image?.id ?? i}
               className={`${i === 0 && "self-start"} ${
                 i === 1 && "self-center"
-              } ${
-                i === 2 && "self-end"
-              } flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
+              } ${i === 2 && "self-end"}   ${
+                isColored ? "grayscale-0" : "grayscale"
+              } transition-all duration-1000  flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
             >
               <Image
                 width={500}
