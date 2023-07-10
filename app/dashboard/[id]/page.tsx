@@ -17,7 +17,7 @@ export const revalidate = 0;
 
 type PageProps = {
   params: {
-    folderName: string;
+    id: string;
   };
 };
 
@@ -38,15 +38,7 @@ type PageProps = {
 const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
 
-  let urlName = props.params.folderName;
-  console.log(urlName);
-  let folderId = urlName.split("%2B")[0];
-  let folderName = urlName.split("%2B")[1];
-  console.log(folderName);
-
-  if (folderName?.includes("-")) {
-    folderName = folderName.split("-").join(" ");
-  }
+  let fId = props.params.id;
 
   // user
   const {
@@ -60,7 +52,7 @@ const FolderDetailPage = async (props: PageProps) => {
     .from("folders")
     .select("*")
     .eq("user_id", user!.id)
-    .eq("id", +folderId);
+    .eq("id", +fId);
 
   if (!selectedFolders) {
     redirect("/auth");
@@ -84,7 +76,7 @@ const FolderDetailPage = async (props: PageProps) => {
           <div className="flex items-center justify-center">
             <Heading
               Element={"h1"}
-              title={folderName}
+              title={selectedFolders[0].name}
               className="text-[8rem] text-center"
             />
             <InfoBtn selectedFolder={selectedFolders[0]} />

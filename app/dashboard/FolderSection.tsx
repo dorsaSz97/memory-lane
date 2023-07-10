@@ -74,9 +74,7 @@ const FolderSection = ({
       </ul>
 
       <Link
-        href={`/dashboard/${
-          folder.id.toString() + "+" + folder.name.split(" ").join("-")
-        }`}
+        href={`/dashboard/${folder.id.toString()}`}
         onClick={() => {
           console.log(
             `/dashboard/${
