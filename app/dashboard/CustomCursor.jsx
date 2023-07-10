@@ -16,7 +16,7 @@ const CustomCursor = () => {
       }px, ${e.clientY - cursorRef.current.clientHeight / 2}px)`;
     });
 
-    return () => document.removeEventListener("mousemove");
+    // return () => document.removeEventListener("mousemove");
   }, []);
   return (
     <motion.div
@@ -25,7 +25,7 @@ const CustomCursor = () => {
         width: mode !== "normal" ? "50px" : "10px",
         height: mode !== "normal" ? "50px" : "10px",
       }}
-      className={` rounded-full absolute pointer-events-none overflow-hidden top-0 left-0 translate-y-0 translate-x-0 ${
+      className={`z-[20000000000000] rounded-full absolute pointer-events-none overflow-hidden top-0 left-0 translate-y-0 translate-x-0 ${
         mode !== "normal" ? "border-2 border-black bg-transparent" : " bg-black"
       }`}
     ></motion.div>
