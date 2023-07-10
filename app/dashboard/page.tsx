@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     .eq("user_id", user!.id);
 
   return (
-    <main className="w-full h-full px-36">
+    <main className="w-full h-full">
       <FoldersList userFolders={userFolders ?? []} user={user!} />
 
       <FolderForm user={user!} />

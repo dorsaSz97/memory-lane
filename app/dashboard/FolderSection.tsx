@@ -105,7 +105,9 @@ const FolderSection = ({
                 i === 1 && "self-center"
               } ${i === 2 && "self-end"}   ${
                 isColored ? "grayscale-0" : "grayscale"
-              } transition-all duration-1000  flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
+              } transition-all duration-1000  flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white  ${
+                isImgLoading ? " blur-md" : " blur-0"
+              }`}
             >
               <Image
                 width={500}
@@ -117,6 +119,9 @@ const FolderSection = ({
               {image && (
                 <Image
                   width={500}
+                  onLoadingComplete={() => {
+                    setIsImageLoading(false);
+                  }}
                   height={500}
                   alt="A memory"
                   src={image.url}

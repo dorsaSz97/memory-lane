@@ -41,7 +41,7 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
               className={`  ${" fixed bg-black  opacity-90 top-0 left-0 z-[1999] w-full h-full"}`}
             />
             <motion.div
-              layoutId={isImageZoomed.toString()}
+              // layoutId={isImageZoomed.toString()}
               onClick={() => {
                 setIsImageZoomed(!isImageZoomed);
                 setSelectedImage(-1);
@@ -81,7 +81,7 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
                 context.setMode("normal");
               }}
               layout
-              layoutId={isImageZoomed.toString()}
+              // layoutId={isImageZoomed.toString()}
               onClick={() => {
                 context.setMode("normal");
                 setIsImageZoomed(!isImageZoomed);

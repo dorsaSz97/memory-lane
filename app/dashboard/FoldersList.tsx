@@ -71,7 +71,7 @@ const FoldersList = ({
 
   return (
     <div
-      className="flex flex-col h-full snap-mandatory snap-y overflow-y-scroll text-8xl scrollbar-hidden"
+      className="flex flex-col h-full snap-mandatory snap-y overflow-y-scroll text-8xl scrollbar-hidden  px-36"
       // className="flex flex-col h-full text-8xl scrollbar-hidden"
       ref={foldersRef}
     >
