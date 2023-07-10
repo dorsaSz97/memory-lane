@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import SupabaseProvider from "@/components/supabase-provider";
 import "./global.css";
 import createClient from "@/util/subpabaseClient-server";
+import CustomCursor from "./dashboard/CustomCursor";
+import CursorManager from "./dashboard/CursorManager";
 
 // dont want it to be cached and therefore not perform the session getting function
 export const revalidate = 0;
@@ -43,12 +45,20 @@ export default async function RootLayout({
   const serverAccessToken = session?.access_token ?? null;
 
   return (
-    <html lang="en" className={`${gaiaDisplay.variable} font-gaiaDisplay`}>
-      <SupabaseProvider serverAccessToken={serverAccessToken}>
-        <body className="relative w-screen h-screen bg-primary text-dark">
-          {children}
-        </body>
-      </SupabaseProvider>
-    </html>
+    <>
+      <html
+        lang="en"
+        className={`${gaiaDisplay.variable} font-gaiaDisplay cursor-none`}
+      >
+        <CursorManager>
+          <CustomCursor />
+          <SupabaseProvider serverAccessToken={serverAccessToken}>
+            <body className="relative w-screen h-screen bg-primary text-dark cursor-none">
+              {children}
+            </body>
+          </SupabaseProvider>
+        </CursorManager>
+      </html>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import { FolderType } from "@/types";
 import supabase from "@/util/subpabaseClient-browser";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 const DeleteBtn = ({
   selectedFolder,
@@ -31,7 +31,11 @@ const DeleteBtn = ({
     router.push("/dashboard");
   };
 
-  return <button onClick={() => deleteFolder()}>Delete this folder</button>;
+  return (
+    <button onClick={() => deleteFolder()} className="text-red-700">
+      Delete this folder
+    </button>
+  );
 };
 
 export default DeleteBtn;

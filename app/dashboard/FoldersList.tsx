@@ -4,7 +4,6 @@ import supabase from "@/util/subpabaseClient-browser";
 import { FolderType } from "@/types";
 import FolderSection from "./FolderSection";
 import { User } from "@supabase/supabase-js";
-
 const FoldersList = ({
   userFolders,
   user,
@@ -48,9 +47,32 @@ const FoldersList = ({
     });
   }, [folders]);
 
+  // useEffect(() => {
+  // (async () => {
+  //   const locomotiveScroll = new LocomotiveScroll({
+  //     lenisOptions: {
+  //       wrapper: window,
+  //       content: document.documentElement,
+  //       lerp: 0.1,
+  //       duration: 2,
+  //       orientation: "vertical",
+  //       gestureOrientation: "vertical",
+  //       smoothWheel: true,
+  //       smoothTouch: false,
+  //       wheelMultiplier: 1,
+  //       touchMultiplier: -3,
+  //       normalizeWheel: true,
+  //       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+  //     },
+  //   });
+  // })();
+
+  // }, []);
+
   return (
     <div
       className="flex flex-col h-full snap-mandatory snap-y overflow-y-scroll text-8xl scrollbar-hidden"
+      // className="flex flex-col h-full text-8xl scrollbar-hidden"
       ref={foldersRef}
     >
       {folders.length === 0 && <p>No folder added yet. Maybe add one?</p>}

@@ -4,7 +4,8 @@ import supabase from "@/util/subpabaseClient-browser";
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CursorContext } from "./CursorManager";
 
 const FolderSection = ({
   folder,
@@ -13,6 +14,7 @@ const FolderSection = ({
   folder: FolderType;
   user: User;
 }) => {
+  const context = useContext(CursorContext);
   const [images, setImages] = useState<any[]>([]);
   const [isColored, setIsColored] = useState(false);
 
@@ -68,8 +70,14 @@ const FolderSection = ({
         href={`/dashboard/${
           folder.id.toString() + "+" + folder.name.split(" ").join("-")
         }`}
-        onMouseEnter={() => setIsColored(true)}
-        onMouseLeave={() => setIsColored(false)}
+        onMouseEnter={() => {
+          setIsColored(true);
+          context.setMode("sth");
+        }}
+        onMouseLeave={() => {
+          setIsColored(false);
+          context.setMode("normal");
+        }}
         className="flex-[2] self-center text-center text-[8rem]"
       >
         {folder.name}
