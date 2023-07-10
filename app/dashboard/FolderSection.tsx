@@ -6,16 +6,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState, useRef } from "react";
 import { CursorContext } from "./CursorManager";
-import { useInView, motion } from "framer-motion";
+import { useInView, motion, delay, stagger } from "framer-motion";
 
 const FolderSection = ({
   folder,
+  direction,
   user,
 }: {
   folder: FolderType;
+  direction: number;
   user: User;
 }) => {
-  console.log(folder.id.toString() + "+" + folder.name.split(" ").join("-"));
   const context = useContext(CursorContext);
   const [images, setImages] = useState<any[]>([]);
   const [isColored, setIsColored] = useState(false);
@@ -37,12 +38,43 @@ const FolderSection = ({
     })();
   }, []);
 
+  const container = {
+    show: {
+      opacity: isInView ? 1 : 0,
+
+      transition: {
+        staggerChildren: 0.5,
+        delayChildren: 0.4,
+        staggerDirection: direction === -1 ? 1 : -1,
+      },
+    },
+  };
+
+  const item = {
+    show: { opacity: isInView ? 1 : 0 },
+  };
+
   return (
     <li className="flex shrink-0 h-screen snap-center">
-      <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
+      <motion.ul
+        className="flex-1 flex flex-col justify-between gap-3 h-full"
+        variants={container}
+        animate="show"
+      >
         {images.slice(0, 3).map((image, i) => {
           return (
-            <li
+            <motion.li
+              variants={item}
+              transition={{
+                duration: 1,
+              }}
+              // animate={{
+              //   opacity: isInView ? 1 : 0,
+              //   transition: {
+              //     delay: isInView ? (direction === -1 ? i * 2 : -i * 2) : 0,
+              //     duration: 1,
+              //   },
+              // }}
               key={image?.id ?? i}
               className={`${i === 0 && "self-end"} ${
                 i === 1 && "self-center"
@@ -71,10 +103,10 @@ const FolderSection = ({
                   className={`absolute top-0 left-0 w-full h-full object-cover z-10`}
                 />
               )}
-            </li>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
 
       <motion.a
         href={`/dashboard/${folder.id.toString()}`}
@@ -103,10 +135,18 @@ const FolderSection = ({
         {folder.name}
       </motion.a>
 
-      <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
+      <motion.ul
+        className="flex-1 flex flex-col justify-between gap-3 h-full"
+        variants={container}
+        animate="show"
+      >
         {images.slice(3, 6).map((image, i) => {
           return (
-            <li
+            <motion.li
+              variants={item}
+              transition={{
+                duration: 1,
+              }}
               key={image?.id ?? i}
               className={`${i === 0 && "self-start"} ${
                 i === 1 && "self-center"
@@ -135,10 +175,10 @@ const FolderSection = ({
                   className={`absolute top-0 left-0 w-full h-full object-cover z-10`}
                 />
               )}
-            </li>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
     </li>
   );
 };

@@ -14,7 +14,8 @@ const FoldersList = ({
   const [folders, setFolders] = useState([...userFolders]);
   const [inserted, setInserted] = useState(false);
   const foldersRef = useRef<null | HTMLDivElement>(null);
-
+  const [direction, setDirection] = useState<number>();
+  console.log(direction);
   useEffect(() => {
     const channel = supabase
       .channel("custom-all-channel")
@@ -49,6 +50,20 @@ const FoldersList = ({
         behavior: "smooth",
       });
   }, [folders]);
+  useEffect(() => {
+    let firstPos = 0;
+    foldersRef.current?.addEventListener("scroll", (e) => {
+      if (foldersRef.current!.scrollTop > firstPos) {
+        console.log("doan");
+        setDirection(-1);
+      } else {
+        console.log("up");
+        setDirection(1);
+      }
+      // saves the new position for iteration.
+      firstPos = foldersRef.current!.scrollTop;
+    });
+  }, []);
 
   // useEffect(() => {
   // (async () => {
@@ -82,7 +97,12 @@ const FoldersList = ({
       {folders.length > 0 && (
         <>
           {folders.map((folder) => (
-            <FolderSection key={folder.id} folder={folder} user={user} />
+            <FolderSection
+              key={folder.id}
+              folder={folder}
+              user={user}
+              direction={direction!}
+            />
           ))}
         </>
       )}
