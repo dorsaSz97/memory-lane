@@ -4,8 +4,9 @@ import supabase from "@/util/subpabaseClient-browser";
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { CursorContext } from "./CursorManager";
+import { useInView, motion } from "framer-motion";
 
 const FolderSection = ({
   folder,
@@ -19,6 +20,8 @@ const FolderSection = ({
   const [images, setImages] = useState<any[]>([]);
   const [isColored, setIsColored] = useState(false);
   const [isImgLoading, setIsImageLoading] = useState(true);
+  const ref = useRef<any | null>(null);
+  const isInView = useInView(ref, { once: false });
 
   useEffect(() => {
     (async () => {
@@ -35,7 +38,7 @@ const FolderSection = ({
   }, []);
 
   return (
-    <li className="flex shrink-0 h-screen snap-center" >
+    <li className="flex shrink-0 h-screen snap-center">
       <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
         {images.slice(0, 3).map((image, i) => {
           return (
@@ -73,7 +76,7 @@ const FolderSection = ({
         })}
       </ul>
 
-      <Link
+      <motion.a
         href={`/dashboard/${folder.id.toString()}`}
         onClick={() => {
           console.log(
@@ -91,10 +94,14 @@ const FolderSection = ({
           setIsColored(false);
           context.setMode("normal");
         }}
-        className="flex-[2] self-center text-center text-[8rem]"
+        className={`flex-[2] self-center text-center text-[8rem]`}
+        //
+        animate={{ opacity: isInView ? 1 : 0 }}
+        transition={{ duration: 2 }}
+        ref={ref}
       >
         {folder.name}
-      </Link>
+      </motion.a>
 
       <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
         {images.slice(3, 6).map((image, i) => {
