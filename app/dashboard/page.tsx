@@ -23,7 +23,8 @@ export default async function DashboardPage() {
   const { data: userFolders } = await supabase
     .from("folders")
     .select("*")
-    .eq("user_id", user!.id);
+    .eq("user_id", user!.id)
+    .order("id", { ascending: true });
 
   return (
     <main className="w-full h-full">

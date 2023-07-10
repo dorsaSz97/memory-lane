@@ -12,6 +12,7 @@ const FoldersList = ({
   user: User;
 }) => {
   const [folders, setFolders] = useState([...userFolders]);
+  const [inserted, setInserted] = useState(false);
   const foldersRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,14 +23,15 @@ const FoldersList = ({
         { event: "*", schema: "public", table: "folders" },
         (payload) => {
           if (payload.eventType === "INSERT") {
+            setInserted(true);
             setFolders((prev) => [...prev, payload.new as FolderType]);
           }
           if (payload.eventType === "DELETE") {
-            setFolders((prev) =>
-              prev.filter(
+            setFolders((prev) => [
+              ...prev.filter(
                 (folder) => folder.id !== (payload.old as FolderType).id
-              )
-            );
+              ),
+            ]);
           }
         }
       )
@@ -41,10 +43,11 @@ const FoldersList = ({
   }, [supabase]);
 
   useEffect(() => {
-    foldersRef.current!.scrollTo({
-      top: foldersRef.current!.scrollHeight * folders.length,
-      behavior: "smooth",
-    });
+    if (inserted)
+      foldersRef.current!.scrollTo({
+        top: foldersRef.current!.scrollHeight * folders.length,
+        behavior: "smooth",
+      });
   }, [folders]);
 
   // useEffect(() => {

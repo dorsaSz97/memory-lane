@@ -23,7 +23,7 @@ const InfoBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
   }, [paragraphRef.current?.textContent]);
 
   return (
-    <div className="flex justify-center relative font-bold mb-auto">
+    <div className="flex justify-center relative font-bold mb-auto ">
       <button className="text-xl" onClick={() => setShowInfo(!showInfo)}>
         !
       </button>

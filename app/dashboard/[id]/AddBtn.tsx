@@ -9,7 +9,7 @@ const AddBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
   const [showFileUploader, setShowFileUploader] = useState(false);
 
   return (
-    <div className="flex justify-center absolute top-0 right-1/2 translate-x-1/2">
+    <div className="flex justify-center absolute top-0 right-1/2 translate-x-1/2  z-[1000] ">
       <button
         className="text-6xl"
         onClick={() => setShowFileUploader(!showFileUploader)}
