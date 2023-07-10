@@ -11,9 +11,10 @@ const CustomCursor = () => {
 
   useEffect(() => {
     document.addEventListener("mousemove", (e) => {
-      cursorRef.current?.style.transform = `translate(${
-        e.clientX - cursorRef.current?.clientWidth / 2
-      }px, ${e.clientY - cursorRef.current?.clientHeight / 2}px)`;
+      if (cursorRef.current)
+        cursorRef.current.style.transform = `translate(${
+          e.clientX - cursorRef.current.clientWidth / 2
+        }px, ${e.clientY - cursorRef.current.clientHeight / 2}px)`;
     });
 
     // return () => document.removeEventListener("mousemove");
