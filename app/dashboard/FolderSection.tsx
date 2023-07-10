@@ -14,6 +14,7 @@ const FolderSection = ({
   folder: FolderType;
   user: User;
 }) => {
+  console.log(folder.id.toString() + "+" + folder.name.split(" ").join("-"));
   const context = useContext(CursorContext);
   const [images, setImages] = useState<any[]>([]);
   const [isColored, setIsColored] = useState(false);
@@ -34,7 +35,7 @@ const FolderSection = ({
   }, []);
 
   return (
-    <li key={folder.id} className="flex shrink-0 h-screen snap-center">
+    <li className="flex shrink-0 h-screen snap-center">
       <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
         {images.slice(0, 3).map((image, i) => {
           return (
@@ -76,7 +77,14 @@ const FolderSection = ({
         href={`/dashboard/${
           folder.id.toString() + "+" + folder.name.split(" ").join("-")
         }`}
-        onClick={() => context.setMode("normal")}
+        onClick={() => {
+          console.log(
+            `/dashboard/${
+              folder.id.toString() + "+" + folder.name.split(" ").join("-")
+            }`
+          );
+          context.setMode("normal");
+        }}
         onMouseEnter={() => {
           setIsColored(true);
           context.setMode("sth");

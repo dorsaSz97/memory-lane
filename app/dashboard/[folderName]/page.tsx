@@ -21,17 +21,19 @@ type PageProps = {
   };
 };
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
-  let urlName = props.params.folderName;
-  let folderId = urlName.split("%2B")[0];
-  let folderName = urlName.split("%2B")[1];
+// export async function generateMetadata({
+//   params,
+// }: PageProps): Promise<Metadata> {
+//   let urlName = params.folderName;
 
-  if (folderName.includes("-")) {
-    folderName = folderName.split("-").join(" ");
-  }
+//   let folderName = urlName.split("%2B")[1];
 
-  return { title: folderName };
-}
+//   if (folderName.includes("-")) {
+//     folderName = folderName.split("-").join(" ");
+//   }
+
+//   return { title: folderName };
+// }
 
 const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
@@ -49,12 +51,15 @@ const FolderDetailPage = async (props: PageProps) => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) return;
+
   // folders
   const { data: selectedFolders } = await supabase
     .from("folders")
     .select("*")
     .eq("user_id", user!.id)
     .eq("id", +folderId);
+
   if (!selectedFolders) {
     redirect("/auth");
   }
