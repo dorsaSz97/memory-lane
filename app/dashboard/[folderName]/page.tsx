@@ -21,19 +21,19 @@ type PageProps = {
   };
 };
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  let urlName = params.folderName;
+// export async function generateMetadata({
+//   params,
+// }: PageProps): Promise<Metadata> {
+//   let urlName = params.folderName;
 
-  let folderName = urlName.split("%2B")[1];
+//   let folderName = urlName.split("%2B")[1];
 
-  if (folderName.includes("-")) {
-    folderName = folderName.split("-").join(" ");
-  }
+//   if (folderName.includes("-")) {
+//     folderName = folderName.split("-").join(" ");
+//   }
 
-  return { title: folderName };
-}
+//   return { title: folderName };
+// }
 
 const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
@@ -44,7 +44,7 @@ const FolderDetailPage = async (props: PageProps) => {
   let folderName = urlName.split("%2B")[1];
   console.log(folderName);
 
-  if (folderName.includes("-")) {
+  if (folderName?.includes("-")) {
     folderName = folderName.split("-").join(" ");
   }
 
