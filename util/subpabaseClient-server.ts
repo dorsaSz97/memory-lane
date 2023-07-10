@@ -1,10 +1,9 @@
-import { headers, cookies } from 'next/headers';
-import { createServerComponentSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
+import { headers, cookies } from "next/headers";
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 export default () => {
-  return createServerComponentSupabaseClient<Database>({
-    headers,
+  return createServerActionClient<Database>({
     cookies,
   });
 };

@@ -7,11 +7,11 @@ import RealtimeProvider from "./RealtimeProvider";
 import { CursorContext } from "../CursorManager";
 
 const ImageSlider = ({ images }: { images: SupaImage[] }) => {
-  const [isLoading, setIsLoading] = useState(true);
   const [userImages, setUserImages] = useState([...images]);
   const [isImageZoomed, setIsImageZoomed] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number>(-1);
   const context = useContext(CursorContext);
+  const [isImgLoading, setIsImageLoading] = useState(true);
 
   const dragHandler = (e: DragEvent<HTMLDivElement>, imgId: string) => {
     e.dataTransfer.setData("text/plain", imgId);
@@ -20,10 +20,6 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
   useEffect(() => {
     setUserImages(images);
   }, [images]);
-
-  const classes = isLoading
-    ? "scale-110 blur-2xl grayscale"
-    : "scale-100 blur-0 grayscale-0";
 
   return (
     <RealtimeProvider setServerImages={setUserImages}>
@@ -94,15 +90,19 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
               draggable
               onDragStart={(e: any) => dragHandler(e, image.id.toString())}
               key={image.id}
-              className={` flex-shrink-0 overflow-hidden cursor-pointer relative w-[15%] h-full top-0 left-0  z-[1000]`}
+              className={` flex-shrink-0 overflow-hidden cursor-pointer relative w-[15%] h-full top-0 left-0  z-[1000] ${
+                isImgLoading ? " blur-md" : " blur-0"
+              }`}
             >
               <Image
                 width={1000}
                 height={1000}
                 alt="photo"
                 src={image.url}
-                className={` ${classes} absolute top-0 left-0 w-full h-full object-cover z-10`}
-                onLoadingComplete={() => setIsLoading(false)}
+                onLoadingComplete={() => {
+                  setIsImageLoading(false);
+                }}
+                className={`absolute top-0 left-0 w-full h-full object-cover z-10`}
               />
               <Image
                 width={1000}
