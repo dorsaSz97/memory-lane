@@ -6,14 +6,9 @@ import FolderDetails from "./FolderDetails";
 import createClient from "@/util/subpabaseClient-server";
 import { redirect } from "next/navigation";
 import AddBtn from "./AddBtn";
-import FileUploader from "./FileUploader";
 import InfoBtn from "./InfoBtn";
 import DeleteBtn from "./DeleteBtn";
 import Trashcan from "./Trashcan";
-import { useEffect } from "react";
-import RealtimeProvider from "./RealtimeProvider";
-
-export const revalidate = 0;
 
 type PageProps = {
   params: {
