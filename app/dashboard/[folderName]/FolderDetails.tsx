@@ -4,11 +4,8 @@ import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import supabase from "@/util/subpabaseClient-browser";
 import { FolderType, SupaImage } from "@/types";
-import FileUploader from "./FileUploader";
-import ImageGallery from "./ImageGallery";
-import { AnimatePresence } from "framer-motion";
 import ImageSlider from "./ImageSlider";
-import { useRef } from "react";
+
 const FolderDetails = ({
   selectedFolder,
   user,

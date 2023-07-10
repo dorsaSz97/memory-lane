@@ -70,6 +70,7 @@ const FolderSection = ({
         href={`/dashboard/${
           folder.id.toString() + "+" + folder.name.split(" ").join("-")
         }`}
+        onClick={() => context.setMode("normal")}
         onMouseEnter={() => {
           setIsColored(true);
           context.setMode("sth");

@@ -1,39 +1,17 @@
 "use client";
 import { SupaImage } from "@/types";
-import Image, { ImageProps } from "next/image";
-import {
-  useState,
-  DragEvent,
-  useEffect,
-  forwardRef,
-  ReactPropTypes,
-} from "react";
-import {
-  AnimatePresence,
-  AnimateSharedLayout,
-  delay,
-  motion,
-} from "framer-motion";
+import Image from "next/image";
+import { useState, DragEvent, useEffect, useContext } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import RealtimeProvider from "./RealtimeProvider";
-
-const ImageDiv = forwardRef<HTMLDivElement, any>(function ExoticImageWrapper(
-  props,
-  ref
-) {
-  return (
-    <div ref={ref} {...props} className={`${props.className}`}>
-      {props.children}
-    </div>
-  );
-});
-
-const MotionComponent = motion(ImageDiv, { forwardMotionProps: true });
+import { CursorContext } from "../CursorManager";
 
 const ImageSlider = ({ images }: { images: SupaImage[] }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userImages, setUserImages] = useState([...images]);
   const [isImageZoomed, setIsImageZoomed] = useState(false);
   const [selectedImage, setSelectedImage] = useState<number>(-1);
+  const context = useContext(CursorContext);
 
   const dragHandler = (e: DragEvent<HTMLDivElement>, imgId: string) => {
     e.dataTransfer.setData("text/plain", imgId);
@@ -100,9 +78,16 @@ const ImageSlider = ({ images }: { images: SupaImage[] }) => {
         {userImages.map((image, i) => {
           return (
             <motion.div
+              onMouseEnter={() => {
+                context.setMode("sth");
+              }}
+              onMouseLeave={() => {
+                context.setMode("normal");
+              }}
               layout
               layoutId={isImageZoomed.toString()}
               onClick={() => {
+                context.setMode("normal");
                 setIsImageZoomed(!isImageZoomed);
                 setSelectedImage(i);
               }}
