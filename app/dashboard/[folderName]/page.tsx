@@ -1,17 +1,17 @@
 // URL => /dashboard/:folderName
-import type { Metadata } from "next";
-import Link from "next/link";
-import Heading from "@/components/ui/Heading";
-import FolderDetails from "./FolderDetails";
-import createClient from "@/util/subpabaseClient-server";
-import { redirect } from "next/navigation";
-import AddBtn from "./AddBtn";
-import FileUploader from "./FileUploader";
-import InfoBtn from "./InfoBtn";
-import DeleteBtn from "./DeleteBtn";
-import Trashcan from "./Trashcan";
-import { useEffect } from "react";
-import RealtimeProvider from "./RealtimeProvider";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import Heading from '@/components/ui/Heading';
+import FolderDetails from './FolderDetails';
+import createClient from '@/util/subpabaseClient-server';
+import { redirect } from 'next/navigation';
+import AddBtn from './AddBtn';
+import FileUploader from './FileUploader';
+import InfoBtn from './InfoBtn';
+import DeleteBtn from './DeleteBtn';
+import Trashcan from './Trashcan';
+import { useEffect } from 'react';
+import RealtimeProvider from './RealtimeProvider';
 
 export const revalidate = 0;
 
@@ -23,11 +23,11 @@ type PageProps = {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   let urlName = props.params.folderName;
-  let folderId = urlName.split("%2B")[0];
-  let folderName = urlName.split("%2B")[1];
+  let folderId = urlName.split('%2B')[0];
+  let folderName = urlName.split('%2B')[1];
 
-  if (folderName.includes("-")) {
-    folderName = folderName.split("-").join(" ");
+  if (folderName?.includes('-')) {
+    folderName = folderName.split('-').join(' ');
   }
 
   return { title: folderName };
@@ -37,11 +37,11 @@ const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
 
   let urlName = props.params.folderName;
-  let folderId = urlName.split("%2B")[0];
-  let folderName = urlName.split("%2B")[1];
+  let folderId = urlName.split('%2B')[0];
+  let folderName = urlName.split('%2B')[1];
 
-  if (folderName.includes("-")) {
-    folderName = folderName.split("-").join(" ");
+  if (folderName?.includes('-')) {
+    folderName = folderName.split('-').join(' ');
   }
 
   // user
@@ -51,12 +51,12 @@ const FolderDetailPage = async (props: PageProps) => {
 
   // folders
   const { data: selectedFolders } = await supabase
-    .from("folders")
-    .select("*")
-    .eq("user_id", user!.id)
-    .eq("id", +folderId);
+    .from('folders')
+    .select('*')
+    .eq('user_id', user!.id)
+    .eq('id', +folderId);
   if (!selectedFolders) {
-    redirect("/auth");
+    redirect('/auth');
   }
 
   return (
@@ -76,7 +76,7 @@ const FolderDetailPage = async (props: PageProps) => {
           {/* folder name */}
           <div className="flex items-center justify-center">
             <Heading
-              Element={"h1"}
+              Element={'h1'}
               title={folderName}
               className="text-[8rem] text-center"
             />
