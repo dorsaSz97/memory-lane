@@ -6,9 +6,14 @@ import FolderDetails from "./FolderDetails";
 import createClient from "@/util/subpabaseClient-server";
 import { redirect } from "next/navigation";
 import AddBtn from "./AddBtn";
+import FileUploader from "./FileUploader";
 import InfoBtn from "./InfoBtn";
 import DeleteBtn from "./DeleteBtn";
 import Trashcan from "./Trashcan";
+import { useEffect } from "react";
+import RealtimeProvider from "./RealtimeProvider";
+
+export const revalidate = 0;
 
 type PageProps = {
   params: {
@@ -16,26 +21,28 @@ type PageProps = {
   };
 };
 
-// export async function generateMetadata({
-//   params,
-// }: PageProps): Promise<Metadata> {
-//   let urlName = params.folderName;
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  let urlName = params.folderName;
 
-//   let folderName = urlName.split("%2B")[1];
+  let folderName = urlName.split("%2B")[1];
 
-//   if (folderName.includes("-")) {
-//     folderName = folderName.split("-").join(" ");
-//   }
+  if (folderName.includes("-")) {
+    folderName = folderName.split("-").join(" ");
+  }
 
-//   return { title: folderName };
-// }
+  return { title: folderName };
+}
 
 const FolderDetailPage = async (props: PageProps) => {
   const supabase = createClient();
 
   let urlName = props.params.folderName;
+  console.log(urlName);
   let folderId = urlName.split("%2B")[0];
   let folderName = urlName.split("%2B")[1];
+  console.log(folderName);
 
   if (folderName.includes("-")) {
     folderName = folderName.split("-").join(" ");

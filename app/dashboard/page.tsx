@@ -18,6 +18,8 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   // wilthe user will 100% exist because of the middleware
 
+  if (!user) return;
+
   const { data: userFolders } = await supabase
     .from("folders")
     .select("*")
