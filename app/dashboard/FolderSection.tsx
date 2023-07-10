@@ -35,7 +35,7 @@ const FolderSection = ({
   }, []);
 
   return (
-    <li className="flex shrink-0 h-screen snap-center">
+    <li className="flex shrink-0 h-screen snap-center" >
       <ul className="flex-1 flex flex-col justify-between gap-3 h-full">
         {images.slice(0, 3).map((image, i) => {
           return (

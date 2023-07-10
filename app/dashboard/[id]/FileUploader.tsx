@@ -56,33 +56,31 @@ const FileUploader = ({
   };
 
   return (
-    <AnimatePresence>
-      <motion.form
-        className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[110%] p-3 rounded-[5px] shadow-2xl z-[90000]"
-        animate={{ opacity: 1 }}
-        initial={{ opacity: 0 }}
-        exit={{ opacity: 0 }}
-        onSubmit={(e: FormEvent<HTMLFormElement>) => e.preventDefault()}
-      >
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <>
-            {" "}
-            <label htmlFor="memory-image" className="text-[2rem]">
-              Your memory:
-            </label>
-            <input
-              type="file"
-              name="memory-image"
-              id="memory-image"
-              ref={fileRef}
-            />
-            <button onClick={uploadImageHandler}>Upload</button>
-          </>
-        )}
-      </motion.form>
-    </AnimatePresence>
+    <motion.form
+      className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[110%] p-3 rounded-[5px] shadow-2xl z-[90000]"
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      exit={{ opacity: 0 }}
+      onSubmit={(e: FormEvent<HTMLFormElement>) => e.preventDefault()}
+    >
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {" "}
+          <label htmlFor="memory-image" className="text-[2rem]">
+            Your memory:
+          </label>
+          <input
+            type="file"
+            name="memory-image"
+            id="memory-image"
+            ref={fileRef}
+          />
+          <button onClick={uploadImageHandler}>Upload</button>
+        </>
+      )}
+    </motion.form>
   );
 };
 

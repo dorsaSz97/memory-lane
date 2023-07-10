@@ -30,7 +30,7 @@ const InfoBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
       {showInfo && (
         <AnimatePresence>
           <motion.div
-            className="bg-primary absolute gap-8 w-fit items-center flex flex-col left-[110%] bottom-1/2 min-w-[300px] h-[200px]  overflow-y-scroll scrollbar-hidden p-3 rounded-[5px] shadow-2xl z-[90000]"
+            className="bg-primary absolute gap-8 w-fit items-center flex flex-col left-[110%] bottom-1/2 min-w-[300px] h-[200px]  overflow-y-scroll scrollbar-hidden p-3 rounded-[5px] shadow-2xl z-[89999]"
             animate={{ opacity: 1 }}
             initial={{ opacity: 0 }}
             exit={{ opacity: 0 }}

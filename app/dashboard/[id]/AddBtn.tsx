@@ -3,6 +3,7 @@
 import { useState } from "react";
 import FileUploader from "./FileUploader";
 import { FolderType } from "@/types";
+import { AnimatePresence } from "framer-motion";
 
 const AddBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
   const [showFileUploader, setShowFileUploader] = useState(false);
@@ -15,12 +16,14 @@ const AddBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
       >
         +
       </button>
-      {showFileUploader && (
-        <FileUploader
-          currentFolder={selectedFolder}
-          setShowFileUploader={setShowFileUploader}
-        />
-      )}
+      <AnimatePresence>
+        {showFileUploader && (
+          <FileUploader
+            currentFolder={selectedFolder}
+            setShowFileUploader={setShowFileUploader}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
