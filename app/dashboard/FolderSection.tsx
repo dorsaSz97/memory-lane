@@ -1,11 +1,11 @@
-"use client";
-import { FolderType } from "@/types";
-import supabase from "@/util/subpabaseClient-browser";
-import { User } from "@supabase/supabase-js";
-import Image from "next/image";
-import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import { CursorContext } from "./CursorManager";
+'use client';
+import { FolderType } from '@/types';
+import supabase from '@/util/subpabaseClient-browser';
+import { User } from '@supabase/supabase-js';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useContext, useEffect, useState } from 'react';
+import { CursorContext } from './CursorManager';
 
 const FolderSection = ({
   folder,
@@ -17,14 +17,15 @@ const FolderSection = ({
   const context = useContext(CursorContext);
   const [images, setImages] = useState<any[]>([]);
   const [isColored, setIsColored] = useState(false);
+  const [isImgLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const { data: images } = await supabase
-        .from("images")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("folder_id", folder.id);
+        .from('images')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('folder_id', folder.id);
 
       images
         ? setImages([...new Array(6)].map((el, i) => images[i]))
@@ -39,21 +40,28 @@ const FolderSection = ({
           return (
             <li
               key={image?.id ?? i}
-              className={`${i === 0 && "self-end"} ${
-                i === 1 && "self-center"
-              } ${i === 2 && "self-start"}  ${
-                isColored ? "grayscale-0" : "grayscale"
-              }  transition-all duration-1000 flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
+              className={`${i === 0 && 'self-end'} ${
+                i === 1 && 'self-center'
+              } ${i === 2 && 'self-start'}  ${
+                isColored ? 'grayscale-0' : 'grayscale'
+              }  transition-all duration-1000 flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white ${
+                isImgLoading
+                  ? 'scale-100 blur-2xl grayscale'
+                  : 'scale-100 blur-0 grayscale-0'
+              }`}
             >
               <Image
                 width={500}
                 height={500}
-                src={i % 2 === 0 ? "/border-solid.png" : "/border-effect.png"}
+                src={i % 2 === 0 ? '/border-solid.png' : '/border-effect.png'}
                 alt="Image border"
                 className="relative h-full w-full z-20"
               />
               {image && (
                 <Image
+                  onLoadingComplete={() => {
+                    setIsImageLoading(false);
+                  }}
                   width={500}
                   height={500}
                   alt="A memory"
@@ -68,16 +76,16 @@ const FolderSection = ({
 
       <Link
         href={`/dashboard/${
-          folder.id.toString() + "+" + folder.name.split(" ").join("-")
+          folder.id.toString() + '+' + folder.name.split(' ').join('-')
         }`}
-        onClick={() => context.setMode("normal")}
+        onClick={() => context.setMode('normal')}
         onMouseEnter={() => {
           setIsColored(true);
-          context.setMode("sth");
+          context.setMode('sth');
         }}
         onMouseLeave={() => {
           setIsColored(false);
-          context.setMode("normal");
+          context.setMode('normal');
         }}
         className="flex-[2] self-center text-center text-[8rem]"
       >
@@ -89,16 +97,16 @@ const FolderSection = ({
           return (
             <li
               key={image?.id ?? i}
-              className={`${i === 0 && "self-start"} ${
-                i === 1 && "self-center"
-              } ${i === 2 && "self-end"}   ${
-                isColored ? "grayscale-0" : "grayscale"
+              className={`${i === 0 && 'self-start'} ${
+                i === 1 && 'self-center'
+              } ${i === 2 && 'self-end'}   ${
+                isColored ? 'grayscale-0' : 'grayscale'
               } transition-all duration-1000  flex-1 flex-shrink-0 relative w-1/2 overflow-hidden bg-white`}
             >
               <Image
                 width={500}
                 height={500}
-                src={i % 2 === 0 ? "/border-solid.png" : "/border-effect.png"}
+                src={i % 2 === 0 ? '/border-solid.png' : '/border-effect.png'}
                 alt="Image border"
                 className="relative h-full w-full z-20"
               />
