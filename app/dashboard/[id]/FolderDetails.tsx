@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import supabase from "@/util/subpabaseClient-browser";
-import { FolderType, SupaImage } from "@/types";
+import { SupaFolder, SupaImage } from "@/types";
 import ImageSlider from "./ImageSlider";
 
 const FolderDetails = ({
@@ -11,9 +11,9 @@ const FolderDetails = ({
   user,
 }: {
   user: User;
-  selectedFolder: FolderType | null;
+  selectedFolder: SupaFolder | null;
 }) => {
-  const [folder, setFolder] = useState<FolderType | null>(selectedFolder);
+  const [folder, setFolder] = useState<SupaFolder | null>(selectedFolder);
   const [showFileUploader, setShowFileUploader] = useState(false);
   const [images, setImages] = useState<SupaImage[]>([]);
 

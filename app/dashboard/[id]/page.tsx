@@ -13,7 +13,7 @@ import Trashcan from "./Trashcan";
 import { useEffect } from "react";
 import RealtimeProvider from "./RealtimeProvider";
 
-export const revalidate = 0;
+// export const revalidate = 0;
 
 type PageProps = {
   params: {

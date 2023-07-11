@@ -1,9 +1,8 @@
-import Spinner from '../../components/ui/Spinner';
+import Spinner from "@/components/ui/Spinner";
 
 export default function Loading() {
-  // Or a custom loading skeleton component
   return (
-    <div className="w-full m-auto h-full flex justify-center items-center">
+    <div className="flex justify-center items-center w-full h-full m-auto">
       <Spinner />
     </div>
   );

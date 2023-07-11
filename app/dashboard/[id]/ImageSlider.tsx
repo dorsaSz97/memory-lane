@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, DragEvent, useEffect, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import RealtimeProvider from "./RealtimeProvider";
-import { CursorContext } from "../CursorManager";
+import { CursorContext } from "@/components/ui/CursorManager";
 
 const ImageSlider = ({ images }: { images: SupaImage[] }) => {
   const [userImages, setUserImages] = useState([...images]);

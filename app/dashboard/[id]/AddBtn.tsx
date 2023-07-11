@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import FileUploader from "./FileUploader";
-import { FolderType } from "@/types";
+import { SupaFolder } from "@/types";
 import { AnimatePresence } from "framer-motion";
 
-const AddBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
+const AddBtn = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
   const [showFileUploader, setShowFileUploader] = useState(false);
 
   return (

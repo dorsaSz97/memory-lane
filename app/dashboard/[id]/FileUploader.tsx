@@ -3,7 +3,7 @@
 import React, { ChangeEvent, useRef, FormEvent, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import supabase from "@/util/subpabaseClient-browser";
-import { FolderType } from "@/types";
+import { SupaFolder } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import Loading from "../loading";
 
@@ -11,7 +11,7 @@ const FileUploader = ({
   currentFolder,
   setShowFileUploader,
 }: {
-  currentFolder: FolderType;
+  currentFolder: SupaFolder;
   setShowFileUploader: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const fileRef = useRef<HTMLInputElement | null>(null);

@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
 import createClient from "@/util/subpabaseClient-server";
-import SignoutButton from "./SignoutButton";
-import FolderForm from "./FolderForm";
-import FoldersList from "./FoldersList";
+import { redirect } from "next/navigation";
+import RealtimeFolders from "./components/RealtimeFolders";
+import FolderForm from "./components/FolderForm";
+import SignoutButton from "./components/SignoutButton";
 
+// to not cache the session and have the updated one on every request
 export const revalidate = 0;
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -16,22 +13,28 @@ export default async function DashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  // wilthe user will 100% exist because of the middleware
 
-  if (!user) return;
+  // because of the middleware, the user definitely exists though
+  if (!user) redirect("/auth/sign-in");
 
-  const { data: userFolders } = await supabase
+  const { data: serverFolders } = await supabase
     .from("folders")
     .select("*")
-    .eq("user_id", user!.id)
+    .eq("user_id", user.id)
     .order("id", { ascending: true });
 
-  return (
-    <main className="w-full h-full">
-      <FoldersList userFolders={userFolders ?? []} user={user!} />
+  const { data: serverImages } = await supabase
+    .from("images")
+    .select("*")
+    .eq("user_id", user.id);
 
-      <FolderForm user={user!} />
+  return (
+    <RealtimeFolders
+      serverFolders={serverFolders ?? []}
+      serverImages={serverImages ?? []}
+    >
+      <FolderForm user={user} />
       <SignoutButton />
-    </main>
+    </RealtimeFolders>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
-import { FolderType } from "@/types";
+import { SupaFolder } from "@/types";
 import supabase from "@/util/subpabaseClient-browser";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-const InfoBtn = ({ selectedFolder }: { selectedFolder: FolderType }) => {
+const InfoBtn = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [info, setInfo] = useState(selectedFolder.info ?? "");
   const [edit, setEdit] = useState(false);

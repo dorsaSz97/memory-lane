@@ -1,5 +1,5 @@
 "use client";
-import { FolderType } from "@/types";
+import { SupaFolder } from "@/types";
 import supabase from "@/util/subpabaseClient-browser";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ const DeleteBtn = ({
   selectedFolder,
   user,
 }: {
-  selectedFolder: FolderType;
+  selectedFolder: SupaFolder;
   user: User;
 }) => {
   const router = useRouter();

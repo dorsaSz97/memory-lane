@@ -28,5 +28,5 @@ export interface ISupabaseState {
   setIsPending: Dispatch<SetStateAction<boolean>>;
 }
 
-export type FolderType = Database["public"]["Tables"]["folders"]["Row"];
+export type SupaFolder = Database["public"]["Tables"]["folders"]["Row"];
 export type SupaImage = Database["public"]["Tables"]["images"]["Row"];

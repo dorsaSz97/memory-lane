@@ -1,8 +1,8 @@
 "use client";
 import { useState, FormEvent, ChangeEvent } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
 import supabase from "@/util/subpabaseClient-browser";
-import { AnimatePresence, motion } from "framer-motion";
 
 const FolderUploader = ({ user }: { user: User }) => {
   const [showForm, setShowForm] = useState(false);
@@ -13,15 +13,15 @@ const FolderUploader = ({ user }: { user: User }) => {
 
   const addNewFolder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!nameValue) {
       setNameError(true);
+      setIsLoading(false);
       return;
     }
 
     try {
-      setIsLoading(true);
-
       const { error } = await supabase.from("folders").insert({
         name: nameValue,
         user_id: user.id,
@@ -39,7 +39,8 @@ const FolderUploader = ({ user }: { user: User }) => {
   };
 
   return (
-    <div className="flex fixed bottom-0 right-1/2 translate-x-1/2 justify-center">
+    <div className="flex justify-center fixed bottom-0 right-1/2 translate-x-1/2">
+      {/* the condition should be inside the animatepresence for the exit animation to work */}
       <AnimatePresence>
         {showForm && (
           <motion.form
@@ -47,7 +48,7 @@ const FolderUploader = ({ user }: { user: User }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onSubmit={addNewFolder}
-            className="flex flex-col gap-5 absolute bottom-full left-1/2 -translate-x-1/2 bg-primary p-4 rounded-lg shadow-2xl"
+            className="flex flex-col gap-5 absolute bottom-full left-1/2 -translate-x-1/2 bg-primary p-4 rounded-lg drop-shadow-form"
           >
             <input
               type="text"
