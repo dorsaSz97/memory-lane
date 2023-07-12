@@ -4,7 +4,7 @@ import supabase from "@/util/subpabaseClient-browser";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-const InfoBtn = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
+const InfoButton = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [info, setInfo] = useState(selectedFolder.info ?? "");
   const [edit, setEdit] = useState(false);
@@ -23,14 +23,14 @@ const InfoBtn = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
   }, [paragraphRef.current?.textContent]);
 
   return (
-    <div className="flex justify-center relative font-bold mb-auto ">
+    <div className="flex justify-center relative font-bold mb-auto z-10">
       <button className="text-xl" onClick={() => setShowInfo(!showInfo)}>
         !
       </button>
       {showInfo && (
         <AnimatePresence>
           <motion.div
-            className="bg-primary absolute gap-8 w-fit items-center flex flex-col left-[110%] bottom-1/2 min-w-[300px] h-[200px]  overflow-y-scroll scrollbar-hidden p-3 rounded-[5px] shadow-2xl z-[89999]"
+            className="bg-primary absolute gap-8 w-fit items-center flex flex-col left-[110%] bottom-1/2 min-w-[300px] h-[200px]  overflow-y-scroll scrollbar-hidden p-3 rounded-[5px] drop-shadow-form"
             animate={{ opacity: 1 }}
             initial={{ opacity: 0 }}
             exit={{ opacity: 0 }}
@@ -53,4 +53,4 @@ const InfoBtn = ({ selectedFolder }: { selectedFolder: SupaFolder }) => {
   );
 };
 
-export default InfoBtn;
+export default InfoButton;

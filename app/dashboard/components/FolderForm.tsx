@@ -48,7 +48,7 @@ const FolderUploader = ({ user }: { user: User }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onSubmit={addNewFolder}
-            className="flex flex-col gap-5 absolute bottom-full left-1/2 -translate-x-1/2 bg-primary p-4 rounded-lg drop-shadow-form"
+            className="flex flex-col gap-5 absolute bottom-full left-1/2 -translate-x-1/2 bg-primary p-4 rounded-lg drop-shadow-form z-[20]"
           >
             <input
               type="text"

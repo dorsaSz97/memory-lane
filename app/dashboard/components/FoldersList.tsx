@@ -43,7 +43,11 @@ const FoldersList = ({ folders, images, scrollDown }: Props) => {
       className="flex flex-col px-36 w-full h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hidden"
       ref={listRef}
     >
-      {folders.length === 0 && <p>No folder added yet. Maybe add one?</p>}
+      {folders.length === 0 && (
+        <p className="self-center my-auto text-5xl">
+          No folder added yet. Maybe add one?
+        </p>
+      )}
       {folders.length > 0 && (
         <>
           {folders.map((folder) => (

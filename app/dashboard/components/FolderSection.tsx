@@ -35,7 +35,13 @@ const FolderSection = ({ folder, images, direction }: Props) => {
   };
   const titleClickHandler = () => {
     setMode("normal");
-    router.push(`/dashboard/${folder.id.toString()}`);
+    router.push(
+      `/dashboard/${
+        folder.name.includes(" ")
+          ? folder.name.split(" ").join("NnAaMmEe")
+          : folder.name
+      }?id=${folder.id.toString()}`
+    );
   };
 
   return (

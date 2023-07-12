@@ -1,18 +1,16 @@
 "use client";
-
-import React, { ChangeEvent, useRef, FormEvent, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import React, { useRef, FormEvent, useState } from "react";
 import supabase from "@/util/subpabaseClient-browser";
 import { SupaFolder } from "@/types";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Loading from "../loading";
 
-const FileUploader = ({
+const ImageForm = ({
   currentFolder,
-  setShowFileUploader,
+  setShowForm,
 }: {
   currentFolder: SupaFolder;
-  setShowFileUploader: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +18,7 @@ const FileUploader = ({
   const uploadImageHandler = async () => {
     setIsLoading(true);
     const uploadedImagesList = fileRef.current!.files;
+    fileRef.current!.files = null;
     let uploadedImage: File | null;
 
     if (uploadedImagesList && uploadedImagesList) {
@@ -49,15 +48,16 @@ const FileUploader = ({
           folder_id: currentFolder.id,
         });
       }
+
       setIsLoading(false);
-      setShowFileUploader(false);
-      fileRef.current!.files = null;
+
+      setShowForm(false);
     }
   };
 
   return (
     <motion.form
-      className="bg-primary absolute flex flex-col gap-8 w-fit items-center left-[50%] translate-x-[-50%] top-[110%] p-3 rounded-[5px] shadow-2xl z-[90000]"
+      className="flex flex-col gap-8 items-center absolute left-1/2 -translate-x-1/2 top-[110%] w-fit p-4 bg-primary drop-shadow-form rounded-lg "
       animate={{ opacity: 1 }}
       initial={{ opacity: 0 }}
       exit={{ opacity: 0 }}
@@ -67,7 +67,6 @@ const FileUploader = ({
         <Loading />
       ) : (
         <>
-          {" "}
           <label htmlFor="memory-image" className="text-[2rem]">
             Your memory:
           </label>
@@ -84,4 +83,4 @@ const FileUploader = ({
   );
 };
 
-export default FileUploader;
+export default ImageForm;

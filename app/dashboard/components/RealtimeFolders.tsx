@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { SupaFolder, SupaImage } from "@/types";
 import supabase from "@/util/subpabaseClient-browser";
 import FoldersList from "./FoldersList";
+import { User } from "@supabase/supabase-js";
 
 const RealtimeFolders = ({
+  user,
   serverFolders,
   serverImages,
   children,
 }: {
+  user: User;
   serverFolders: SupaFolder[];
   serverImages: SupaImage[];
   children: React.ReactNode;
@@ -25,15 +28,17 @@ const RealtimeFolders = ({
         { event: "*", schema: "public", table: "folders" },
         (payload) => {
           if (payload.eventType === "INSERT") {
+            console.log("insert");
             setFolders((prev) => [...prev, payload.new as SupaFolder]);
             setScrollDown(true);
           }
           if (payload.eventType === "DELETE") {
-            setFolders((prev) =>
-              prev.filter(
+            console.log("delete");
+            setFolders((prev) => [
+              ...prev.filter(
                 (folder) => folder.id !== (payload.old as SupaFolder).id
-              )
-            );
+              ),
+            ]);
           }
         }
       )
@@ -42,6 +47,7 @@ const RealtimeFolders = ({
         { event: "*", schema: "public", table: "images" },
         (payload) => {
           if (payload.eventType === "INSERT") {
+            console.log("insert img");
             setImages((prev) => [...prev, payload.new as SupaImage]);
           }
           if (payload.eventType === "DELETE") {

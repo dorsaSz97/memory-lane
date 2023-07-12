@@ -4,6 +4,7 @@ import RealtimeFolders from "./components/RealtimeFolders";
 import FolderForm from "./components/FolderForm";
 import SignoutButton from "./components/SignoutButton";
 
+// NOT WORKING
 // to not cache the session and have the updated one on every request
 export const revalidate = 0;
 
@@ -29,12 +30,15 @@ export default async function DashboardPage() {
     .eq("user_id", user.id);
 
   return (
-    <RealtimeFolders
-      serverFolders={serverFolders ?? []}
-      serverImages={serverImages ?? []}
-    >
-      <FolderForm user={user} />
-      <SignoutButton />
-    </RealtimeFolders>
+    <main className="w-full h-full">
+      <RealtimeFolders
+        user={user}
+        serverFolders={serverFolders ?? []}
+        serverImages={serverImages ?? []}
+      >
+        <FolderForm user={user} />
+        <SignoutButton />
+      </RealtimeFolders>
+    </main>
   );
 }
