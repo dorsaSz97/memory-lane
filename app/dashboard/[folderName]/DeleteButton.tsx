@@ -35,6 +35,8 @@ const DeleteButton = ({
       .eq("user_id", user.id);
 
     router.push("/dashboard");
+    // ::::::::::::::::::::::::::::::::::::::::::NOT WORKING
+    router.refresh();
   };
 
   return (

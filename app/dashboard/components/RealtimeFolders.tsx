@@ -3,15 +3,12 @@ import { useEffect, useState } from "react";
 import { SupaFolder, SupaImage } from "@/types";
 import supabase from "@/util/subpabaseClient-browser";
 import FoldersList from "./FoldersList";
-import { User } from "@supabase/supabase-js";
 
 const RealtimeFolders = ({
-  user,
   serverFolders,
   serverImages,
   children,
 }: {
-  user: User;
   serverFolders: SupaFolder[];
   serverImages: SupaImage[];
   children: React.ReactNode;
@@ -20,22 +17,22 @@ const RealtimeFolders = ({
   const [images, setImages] = useState(serverImages);
   const [scrollDown, setScrollDown] = useState(false);
 
-  // REVALIDATE 0 WASNT WORKING
-  useEffect(() => {
-    (async () => {
-      const { data: serverFolders } = await supabase
-        .from("folders")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("id", { ascending: true });
-      setFolders(serverFolders ?? []);
-      const { data: serverImages } = await supabase
-        .from("images")
-        .select("*")
-        .eq("user_id", user.id);
-      setImages(serverImages ?? []);
-    })();
-  }, []);
+  //:::::::::::::::::::::::::::::::::::::::::: REVALIDATE 0 WASNT WORKING
+  // useEffect(() => {
+  //   (async () => {
+  //     const { data: serverFolders } = await supabase
+  //       .from("folders")
+  //       .select("*")
+  //       .eq("user_id", user.id)
+  //       .order("id", { ascending: true });
+  //     setFolders(serverFolders ?? []);
+  //     const { data: serverImages } = await supabase
+  //       .from("images")
+  //       .select("*")
+  //       .eq("user_id", user.id);
+  //     setImages(serverImages ?? []);
+  //   })();
+  // }, []);
 
   useEffect(() => {
     const channel = supabase
