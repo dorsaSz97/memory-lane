@@ -7,6 +7,7 @@ import TrashButton from "./TrashButton";
 import ActionsBar from "./ActionsBar";
 import InfoButton from "./InfoButton";
 import FileUploader from "./FileUploader";
+import { Metadata } from "next";
 
 export const revalidate = 0;
 
@@ -18,6 +19,18 @@ type PageProps = {
     id: string;
   };
 };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  let urlFolderName = params.folderName;
+
+  let folderName = urlFolderName.includes("NnAaMmEe")
+    ? urlFolderName.split("NnAaMmEe").join(" ")
+    : urlFolderName;
+
+  return { title: folderName };
+}
 
 const FolderDetailPage = async (props: PageProps) => {
   let folderId = props.searchParams.id;
