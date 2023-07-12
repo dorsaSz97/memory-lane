@@ -15,11 +15,11 @@ const FoldersList = ({ folders, images, scrollDown }: Props) => {
   useEffect(() => {
     let firstPos = 0;
     listRef.current!.addEventListener("scroll", () => {
-      if (listRef.current!.scrollTop > firstPos) {
-        console.log("going down");
+      if (listRef.current!.scrollTop >= firstPos) {
+        // console.log("going down");
         setDirection(-1);
       } else {
-        console.log("going up");
+        // console.log("going up");
         setDirection(1);
       }
       // saves the new position
@@ -31,7 +31,7 @@ const FoldersList = ({ folders, images, scrollDown }: Props) => {
 
   useEffect(() => {
     // scroll down only when a new folder is added
-    if (scrollDown && listRef.current)
+    if (scrollDown)
       listRef.current!.scrollTo({
         top: listRef.current!.scrollHeight * folders.length,
         behavior: "smooth",

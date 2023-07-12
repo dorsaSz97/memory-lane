@@ -6,7 +6,7 @@ import SignoutButton from "./components/SignoutButton";
 
 // NOT WORKING
 // to not cache the session and have the updated one on every request
-export const revalidate = 0;
+// export const revalidate = 0;
 
 export default async function DashboardPage() {
   const supabase = createClient();

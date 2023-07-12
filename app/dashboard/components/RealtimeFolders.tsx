@@ -20,6 +20,23 @@ const RealtimeFolders = ({
   const [images, setImages] = useState(serverImages);
   const [scrollDown, setScrollDown] = useState(false);
 
+  // REVALIDATE 0 WASNT WORKING
+  useEffect(() => {
+    (async () => {
+      const { data: serverFolders } = await supabase
+        .from("folders")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("id", { ascending: true });
+      setFolders(serverFolders ?? []);
+      const { data: serverImages } = await supabase
+        .from("images")
+        .select("*")
+        .eq("user_id", user.id);
+      setImages(serverImages ?? []);
+    })();
+  }, []);
+
   useEffect(() => {
     const channel = supabase
       .channel("realtime folders")
@@ -28,18 +45,18 @@ const RealtimeFolders = ({
         { event: "*", schema: "public", table: "folders" },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            console.log("insert");
             setFolders((prev) => [...prev, payload.new as SupaFolder]);
             setScrollDown(true);
           }
-          if (payload.eventType === "DELETE") {
-            console.log("delete");
-            setFolders((prev) => [
-              ...prev.filter(
-                (folder) => folder.id !== (payload.old as SupaFolder).id
-              ),
-            ]);
-          }
+          // deletion is happening in another path
+          // if (payload.eventType === "DELETE") {
+          //   console.log("delete");
+          //   setFolders((prev) => [
+          //     ...prev.filter(
+          //       (folder) => folder.id !== (payload.old as SupaFolder).id
+          //     ),
+          //   ]);
+          // }
         }
       )
       .on(
@@ -47,7 +64,6 @@ const RealtimeFolders = ({
         { event: "*", schema: "public", table: "images" },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            console.log("insert img");
             setImages((prev) => [...prev, payload.new as SupaImage]);
           }
           if (payload.eventType === "DELETE") {
